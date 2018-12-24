@@ -20,10 +20,13 @@ class Main:
 				'alltvshows': 'All TV Shows'
 				}
 			library = {
-				'libraryallmovies': 'Library movies',
-				'libraryalltvshows': 'Library tv shows'
+				'libraryallmovies': 'My Movies (Library)',
+				'libraryalltvshows': 'My TV Shows (Library)'
 				}
-			xbmcplugin.setContent(self.handle, 'files')
+			search  = {
+				'moviedbbrowser': 'Search...'
+				}
+			xbmcplugin.setContent(self.handle, 'addons')
 			media_path = 'special://home/addons/script.extendedinfo/resources/skins/Default/media/'
 			for key, value in sorted(movies.iteritems()):
 				li = xbmcgui.ListItem(value)
@@ -37,7 +40,12 @@ class Main:
 				xbmcplugin.addDirectoryItem(self.handle, url, li, False)
 			for key, value in sorted(library.iteritems()):
 				li = xbmcgui.ListItem(value)
-				li.setArt({'thumb': media_path + 'lb.png', 'fanart': media_path + 'lb-fanart.jpg'})
+				li.setArt({'thumb': media_path + 'tm.png', 'fanart': media_path + 'tm-fanart.jpg'})
+				url = 'plugin://script.extendedinfo?info=%s' % key
+				xbmcplugin.addDirectoryItem(self.handle, url, li, False)
+			for key, value in search.iteritems():
+				li = xbmcgui.ListItem(value)
+				li.setArt({'thumb': media_path + 'tm.png', 'fanart': media_path + 'tm-fanart.jpg'})
 				url = 'plugin://script.extendedinfo?info=%s' % key
 				xbmcplugin.addDirectoryItem(self.handle, url, li, False)
 			xbmcplugin.endOfDirectory(self.handle)
