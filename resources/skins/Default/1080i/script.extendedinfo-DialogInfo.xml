@@ -64,7 +64,6 @@
 					<width>845</width>
 					<height>114</height>
 					<aspectratio align="right">keep</aspectratio>
-					<texture>moviedb.png</texture>
 				</control>
 			</control>
 			<control type="group">

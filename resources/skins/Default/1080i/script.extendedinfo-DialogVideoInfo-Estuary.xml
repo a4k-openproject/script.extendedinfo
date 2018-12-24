@@ -82,7 +82,7 @@
 							<width>960</width>
 							<height>210</height>
 							<align>left</align>
-							<label fallback="19055">[B]$INFO[Window.Property(movie.TagLine),,[CR]][/B]$INFO[Window.Property(movie.Plot)]</label>
+							<label fallback="No information available">[B]$INFO[Window.Property(movie.TagLine),,[CR]][/B]$INFO[Window.Property(movie.Plot)]</label>
 							<textcolor>FFFFFFFF</textcolor>
 							<font>font12</font>
 							<autoscroll delay="10000" time="2000" repeat="10000">true</autoscroll>
@@ -2641,7 +2641,7 @@
 									<height>38</height>
 									<align>center</align>
 									<aligny>center</aligny>
-									<label fallback="563">$INFO[Window.Property(movie.Votes),, Votes]</label>
+									<label fallback="Rating">$INFO[Window.Property(movie.Votes),, Votes]</label>
 									<textcolor>FFFFFFFF</textcolor>
 									<font>font10</font>
 								</control>
@@ -2706,7 +2706,7 @@
 									<height>38</height>
 									<align>center</align>
 									<aligny>center</aligny>
-									<label fallback="172">$INFO[Window.Property(movie.Status)]</label>
+									<label fallback="Release date">$INFO[Window.Property(movie.Status)]</label>
 									<textcolor>FFFFFFFF</textcolor>
 									<font>font10</font>
 								</control>

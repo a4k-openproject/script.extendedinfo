@@ -43,7 +43,7 @@
 				<width>1950</width>
 				<height>1080</height>
 				<aspectratio align="center">scale</aspectratio>
-				<texture fallback="common/black.png">$INFO[Window.Property(actor.ImageFilter)]</texture>
+				<texture fallback="common/black.png">black</texture>
 			</control>
 			<control type="image">
 				<posx>729</posx>
