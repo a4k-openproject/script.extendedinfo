@@ -412,6 +412,7 @@ def play_movie_trailer(id):
 	trailer = get_trailer(id)
 	url = 'plugin://plugin.video.youtube/play/?video_id=' + trailer
 	xbmc.executebuiltin('PlayMedia(%s,1)' % url)
+	xbmc.executebuiltin('Dialog.Close(busydialog)')
 
 def play_movie_trailer_fullscreen(id):
 	trailer = get_trailer(id)
@@ -429,6 +430,7 @@ def play_tv_trailer(id):
 	trailer = get_tvtrailer(id)
 	url = 'plugin://plugin.video.youtube/play/?video_id=' + trailer
 	xbmc.executebuiltin('PlayMedia(%s,1)' % url)
+	xbmc.executebuiltin('Dialog.Close(busydialog)')
 
 def play_tv_trailer_fullscreen(id):
 	trailer = get_tvtrailer(id)

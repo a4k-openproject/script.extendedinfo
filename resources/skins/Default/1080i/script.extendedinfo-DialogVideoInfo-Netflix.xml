@@ -49,16 +49,16 @@
 					<height>535</height>
 					<!-- Change vertical widget location-->
 					<control type="group" id="50000">
-						<height>80</height>
+						<height>150</height>
 						<control type="grouplist" id="5000">
 							<onback condition="Player.HasVideo">PlayerControl(Stop)</onback>
-							<posx>-1</posx>
-							<posy>5</posy>
+							<top>30</top>
+							<left>-2</left>
 							<width>900</width>
-							<height>140</height>
+							<height>150</height>
 							<onup>132</onup>
 							<ondown>2000</ondown>
-							<itemgap>-26</itemgap>
+							<itemgap>-27</itemgap>
 							<orientation>horizontal</orientation>
 							<scrolltime tween="quadratic">200</scrolltime>
 							<control type="radiobutton" id="8">
@@ -67,8 +67,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/play.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/play.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/play.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>78</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -89,8 +89,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/play.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/play.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/play.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>78</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -111,8 +111,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/play.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/play.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/play.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>78</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -133,8 +133,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/play.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/play.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/play.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>78</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -155,8 +155,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/button-trailer.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/button-trailer.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/button-trailer.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>32</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -178,8 +178,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/button-trailer.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/button-trailer.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/button-trailer.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>32</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -201,8 +201,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/starplus.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/starplus.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/starplus.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>60</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -224,8 +224,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/starminus.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/starminus.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/starminus.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>60</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -247,8 +247,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/starplus.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/starplus.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/starplus.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>60</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -270,8 +270,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/starminus.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/starminus.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/starminus.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>60</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -293,8 +293,8 @@
 								<textureradioofffocus colordiffuse="FFFFFFFF">icons/tool2.png</textureradioofffocus>
 								<textureradiooffnofocus colordiffuse="FF999999">icons/tool2.png</textureradiooffnofocus>
 								<textureradioonnofocus colordiffuse="FF999999">icons/tool2.png</textureradioonnofocus>
-								<width>232</width>
-								<height>118</height>
+								<width>230</width>
+								<height>115</height>
 								<textoffsetx>50</textoffsetx>
 								<align>right</align>
 								<aligny>center</aligny>
@@ -1701,46 +1701,109 @@
 				</control>
 				<!-- Start Netflix Video & Fanart -->
 				<control type="group" id="33000">
-					<posx>1200</posx>
-					<posy>-20</posy>
+					<top>-45</top>
+					<left>1200</left>
 					<animation effect="fade" time="250">VisibleChange</animation>
 					<control type="videowindow" id="1">
 						<visible>Player.HasVideo</visible>
-						<top>-74</top>
-						<left>-12</left>
+						<top>-60</top>
+						<left>-10</left>
 						<width>1500</width>
 						<height>670</height>
-<!--						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.76)">Conditional</animation>
+						<animation effect="slide" start="0" end="180,-10" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.78)">Conditional</animation>
+						<animation effect="slide" start="0" end="290,-20" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.37)">Conditional</animation>
+						<animation effect="slide" start="0" end="305,-25" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.33)">Conditional</animation>
+<!--
+						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.76)">Conditional</animation>
 						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.55)">Conditional</animation>
-						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.40)">Conditional</animation>
 						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.39)">Conditional</animation>
-						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.35)">Conditional</animation>
 						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.20)">Conditional</animation>
-						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.85)">Conditional</animation> -->
-						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.78)">Conditional</animation>
-<!--						<animation effect="slide" start="0" end="196,-2" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.66)">Conditional</animation> -->
-						<animation effect="slide" start="0" end="292,-2" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.37)">Conditional</animation>
-						<animation effect="slide" start="0" end="306,-20" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.33)">Conditional</animation>
+						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.85)">Conditional</animation>
+						<animation effect="slide" start="0" end="196,-2" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.66)">Conditional</animation>
+-->
 					</control>
 					<control type="image">
-						<visible>Player.HasVideo</visible>
-						<top>-80</top>
-						<left>-26</left>
-						<width>1520</width>
-						<height>670</height>
-						<texture colordiffuse="FF000000" border="40">overlay/netflix_corner.png</texture>
-<!--						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.76)">Conditional</animation>
-						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.55)">Conditional</animation>
-						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.40)">Conditional</animation>
-						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.39)">Conditional</animation>
-						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.35)">Conditional</animation>
-						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,2.20)">Conditional</animation>
-						<animation effect="slide" start="0" end="156,-24" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.85)">Conditional</animation> -->
-						<animation effect="slide" start="0" end="310,0" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.78)">Conditional</animation>
-<!--						<animation effect="slide" start="0" end="196,-2" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.66)">Conditional</animation> -->
-						<animation effect="slide" start="0" end="576,20" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.37)">Conditional</animation>
-						<animation effect="slide" start="0" end="610,-82" time="0" condition="String.IsEqual(VideoPlayer.VideoAspect,1.33)">Conditional</animation>
+						<visible>Player.HasVideo + String.IsEqual(VideoPlayer.VideoAspect,2.40) | String.IsEqual(VideoPlayer.VideoAspect,2.35)</visible>
+						<top>-5</top>
+						<left>-15</left>
+						<width>1505</width>
+						<height>615</height>
+						<texture colordiffuse="FF000000">overlay/full_window.png</texture>
 					</control>
+					<control type="image">
+						<visible>Player.HasVideo + String.IsEqual(VideoPlayer.VideoAspect,1.78)</visible>
+						<top>15</top>
+						<left>320</left>
+						<width>1175</width>
+						<height>600</height>
+						<texture colordiffuse="FF000000">overlay/full_window.png</texture>
+					</control>
+					<control type="image">
+						<visible>Player.HasVideo + String.IsEqual(VideoPlayer.VideoAspect,1.37)</visible>
+						<top>10</top>
+						<left>550</left>
+						<width>945</width>
+						<height>600</height>
+						<texture colordiffuse="FF000000">overlay/full_window.png</texture>
+					</control>
+					<control type="image">
+						<visible>Player.HasVideo + String.IsEqual(VideoPlayer.VideoAspect,1.33)</visible>
+						<top>10</top>
+						<left>585</left>
+						<width>910</width>
+						<height>605</height>
+						<texture colordiffuse="FF000000">overlay/full_window.png</texture>
+					</control>
+<!--
+					<control type="image">
+						<visible>Player.HasVideo + String.IsEqual(VideoPlayer.VideoAspect,2.76)</visible>
+						<top>15</top>
+						<left>320</left>
+						<width>1175</width>
+						<height>600</height>
+						<texture colordiffuse="FF000000">overlay/full_window.png</texture>
+					</control>
+					<control type="image">
+						<visible>Player.HasVideo + String.IsEqual(VideoPlayer.VideoAspect,2.55)</visible>
+						<top>10</top>
+						<left>550</left>
+						<width>945</width>
+						<height>600</height>
+						<texture colordiffuse="FF000000">overlay/full_window.png</texture>
+					</control>
+					<control type="image">
+						<visible>Player.HasVideo + String.IsEqual(VideoPlayer.VideoAspect,2.39)</visible>
+						<top>10</top>
+						<left>585</left>
+						<width>910</width>
+						<height>605</height>
+						<texture colordiffuse="FF000000">overlay/full_window.png</texture>
+					</control>
+					<control type="image">
+						<visible>Player.HasVideo + String.IsEqual(VideoPlayer.VideoAspect,2.20)</visible>
+						<top>15</top>
+						<left>320</left>
+						<width>1175</width>
+						<height>600</height>
+						<texture colordiffuse="FF000000">overlay/full_window.png</texture>
+					</control>
+					<control type="image">
+						<visible>Player.HasVideo + String.IsEqual(VideoPlayer.VideoAspect,1.85)</visible>
+						<top>10</top>
+						<left>550</left>
+						<width>945</width>
+						<height>600</height>
+						<texture colordiffuse="FF000000">overlay/full_window.png</texture>
+					</control>
+					<control type="image">
+						<visible>Player.HasVideo + String.IsEqual(VideoPlayer.VideoAspect,1.66)</visible>
+						<top>10</top>
+						<left>585</left>
+						<width>910</width>
+						<height>605</height>
+						<texture colordiffuse="FF000000">overlay/full_window.png</texture>
+					</control>
+-->
 					<control type="image">
 						<visible>!Player.HasVideo + [String.IsEqual(Window.Property(Type),tvshow) | String.IsEqual(Window.Property(Type),movie)]</visible>
 						<width>1500</width>

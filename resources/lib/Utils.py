@@ -280,8 +280,7 @@ def log(txt):
 	xbmc.log(msg=message.encode('utf-8', 'ignore'), level=xbmc.LOGDEBUG)
 
 def get_browse_dialog(default='', heading='Browse', dlg_type=3, shares='files', mask='', use_thumbs=False, treat_as_folder=False):
-	dialog = xbmcgui.Dialog()
-	value = dialog.browse(dlg_type, heading, shares, mask, use_thumbs, treat_as_folder, default)
+	value = xbmcgui.Dialog().browse(dlg_type, heading, shares, mask, use_thumbs, treat_as_folder, default)
 	return value
 
 def save_to_file(content, filename, path=''):
@@ -324,7 +323,6 @@ def get_kodi_json(method, params):
 	return json.loads(json_query)
 
 def pass_dict_to_skin(data=None, prefix='', debug=False, precache=False, window_id=10000):
-	window = xbmcgui.Window(window_id)
 	if not data:
 		return None
 	threads = []
@@ -340,7 +338,7 @@ def pass_dict_to_skin(data=None, prefix='', debug=False, precache=False, window_
 					threads += [thread]
 					thread.start()
 					image_requests.append(value)
-		window.setProperty('%s%s' % (prefix, str(key)), value)
+		xbmcgui.Window(window_id).setProperty('%s%s' % (prefix, str(key)), value)
 		if debug:
 			log('%s%s' % (prefix, str(key)) + value)
 	for x in threads:
