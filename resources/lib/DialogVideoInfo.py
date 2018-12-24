@@ -72,15 +72,6 @@ def get_movie_window(window_type):
 		def open_movie_info(self):
 			wm.open_movie_info(prev_window=self, movie_id=self.listitem.getProperty('id'), dbid=self.listitem.getProperty('dbid'))
 
-		@ch.click(10)
-		def play_trailer(self):
-			PLAYER.playtube(self.getControl(1150).getListItem(0).getProperty('youtube_id'), listitem=self.listitem, window=window)
-
-		@ch.click(350)
-		@ch.click(1150)
-		def play_youtube_video(self):
-			PLAYER.playtube(self.listitem.getProperty('youtube_id'), listitem=self.listitem, window=self)
-
 		@ch.click(550)
 		def open_company_list(self):
 			filters = [
@@ -155,7 +146,7 @@ def get_movie_window(window_type):
 			else:
 				dbid = 0
 				url = 'plugin://plugin.video.openmeta/movies/play/tmdb/%s' % self.info.get('id', '')
-			PLAYER.OpenInfoplay(url, listitem=None, window=self, dbid=dbid)
+			PLAYER.play_from_button(url, listitem=None, window=self, dbid=dbid)
 
 		@ch.click(445)
 		def show_manage_dialog(self):
@@ -170,22 +161,36 @@ def get_movie_window(window_type):
 
 		@ch.click(18)
 		def add_movie_to_library(self):
-			xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/movies/add_to_library/tmdb/%s)' % self.info.get('id', ''))
-			Utils.notify(header='Added "%s" to library' % self.info.get('title', ''), message='Starting library scan now', icon=self.info['poster'], time=5000, sound=False)
-			Utils.after_add(type='movie')
-			Utils.notify(header='To refresh all content', message='Exit OpenInfo & re-enter', icon=self.info['poster'], time=5000, sound=False)
+			if xbmcgui.Dialog().yesno('OpenInfo', 'Add [B]%s[/B] to library?' % self.info['title']):
+				xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/movies/add_to_library/tmdb/%s)' % self.info.get('id', ''))
+				Utils.notify(header='Added [B]%s[/B] to library' % self.info['title'], message='Starting library scan now', icon=self.info['poster'], time=5000, sound=False)
+				Utils.after_add(type='movie')
+				Utils.notify(header='To refresh all content', message='Exit OpenInfo & re-enter', icon=self.info['poster'], time=5000, sound=False)
 
 		@ch.click(19)
 		def remove_movie_from_library(self):
-			MovieLibrary = xbmcaddon.Addon('plugin.video.openmeta').getSetting('movies_library_folder')
-			imdb_id = self.info['imdb_id']
-			if os.path.exists(xbmc.translatePath('%s%s/' % (MovieLibrary, imdb_id))):
-				Utils.get_kodi_json(method='VideoLibrary.RemoveMovie', params='{"movieid": %d}' % int(self.info['dbid']))
-				shutil.rmtree(xbmc.translatePath('%s%s/' % (MovieLibrary, imdb_id)))
-				Utils.notify(header='Removed "%s" from library' % self.info.get('title', ''), message='Exit & re-enter to refresh', icon=self.info['poster'], time=5000, sound=False)
-				Utils.after_add(type='movie')
-			else:
-				Utils.notify(header='To refresh all content', message='Exit OpenInfo & re-enter', icon=self.info['poster'], time=5000, sound=False)
+			if xbmcgui.Dialog().yesno('OpenInfo', 'Remove [B]%s[/B] from library?' % self.info['title']):
+				MovieLibrary = xbmcaddon.Addon('plugin.video.openmeta').getSetting('movies_library_folder')
+				if os.path.exists(xbmc.translatePath('%s%s/' % (MovieLibrary, self.info['imdb_id']))):
+					Utils.get_kodi_json(method='VideoLibrary.RemoveMovie', params='{"movieid": %d}' % int(self.info['dbid']))
+					shutil.rmtree(xbmc.translatePath('%s%s/' % (MovieLibrary, self.info['imdb_id'])))
+					Utils.notify(header='Removed [B]%s[/B] from library' % self.info.get('title', ''), message='Exit & re-enter to refresh', icon=self.info['poster'], time=5000, sound=False)
+					Utils.after_add(type='movie')
+				else:
+					Utils.notify(header='To refresh all content', message='Exit OpenInfo & re-enter', icon=self.info['poster'], time=5000, sound=False)
+
+		@ch.click(350)
+		@ch.click(1150)
+		def play_youtube_video(self):
+			PLAYER.playtube(self.listitem.getProperty('youtube_id'), listitem=self.listitem, window=self)
+
+		@ch.click(28)
+		def play_movie_trailer_button(self):
+			TheMovieDB.play_movie_trailer(self.info['id'])
+
+		@ch.click(29)
+		def stop_movie_trailer_button(self):
+			 xbmc.executebuiltin('PlayerControl(Stop)')
 
 	class SetItemsThread(threading.Thread):
 

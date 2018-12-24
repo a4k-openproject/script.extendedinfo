@@ -51,7 +51,7 @@ class DialogBaseInfo(object):
 	def bounce(self, identifier):
 		self.bouncing = True
 		self.window.setProperty('Bounce.%s' % identifier, 'true')
-		xbmc.sleep(200)
+		xbmc.sleep(100)
 		self.window.clearProperty('Bounce.%s' % identifier)
 		self.bouncing = False
 

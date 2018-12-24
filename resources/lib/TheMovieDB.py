@@ -398,32 +398,42 @@ def get_show_tmdb_id(tvdb_id=None, db=None, imdb_id=None):
 	if response:
 		return response['tv_results'][0]['id']
 	else:
-		Utils.notify(header='TV Show', message='Info not found.', time=5000, sound=False)
+		Utils.notify('TV Show info not found', time=5000, sound=False)
 		return None
 
-def get_trailer(movie_id=None):
+def get_trailer(movie_id):
 	response = get_tmdb_data('movie/%s?append_to_response=videos,null,%s&language=%s&' % (movie_id, xbmcaddon.Addon().getSetting('LanguageID'), xbmcaddon.Addon().getSetting('LanguageID')), 30)
 	if response and 'videos' in response and response['videos']['results']:
-		trailersearches = ['official trailer', 'trailer', 'teaser', 'promo', 'sneak preview', 'intro', 'opening credits']
-		for search in trailersearches:
-			for item in response['videos']['results']:
-				if search.lower() in Utils.fetch(item, 'name').lower() or search in Utils.fetch(item, 'type').lower():
-					Utils.notify(header=search.title() + ' Found:', message='Playing ' + str(Utils.fetch(item, 'type')).title() + '...', sound=False)
-					return Utils.fetch(item, 'key')
-	Utils.notify(header='Movie', message='Trailer not found.', sound=False)
+		return response['videos']['results'][0]['key']
+	Utils.notify('Movie trailer not found', sound=False)
 	return ''
 
-def get_tvtrailer(tvshow_id=None):
-	response = get_tmdb_data('tv/%s?append_to_response=alternative_titles,content_ratings,credits,external_ids,images,keywords,rating,similar,translations,videos&include_image_language=en,null,%s&language=%s&' % (tvshow_id, xbmcaddon.Addon().getSetting('LanguageID'), xbmcaddon.Addon().getSetting('LanguageID')), 30)
+def play_movie_trailer(id):
+	trailer = get_trailer(id)
+	url = 'plugin://plugin.video.youtube/play/?video_id=' + trailer
+	xbmc.executebuiltin('PlayMedia(%s,1)' % url)
+
+def play_movie_trailer_fullscreen(id):
+	trailer = get_trailer(id)
+	url = 'plugin://plugin.video.youtube/play/?video_id=' + trailer
+	xbmc.executebuiltin('PlayMedia(%s)' % url)
+
+def get_tvtrailer(tvshow_id):
+	response = get_tmdb_data('tv/%s?append_to_response=videos,null,%s&language=%s&' % (tvshow_id, xbmcaddon.Addon().getSetting('LanguageID'), xbmcaddon.Addon().getSetting('LanguageID')), 30)
 	if response and 'videos' in response and response['videos']['results']:
-		trailersearches = ['official trailer', 'trailer', 'teaser', 'promo', 'sneak preview', 'intro', 'opening credits']
-		for search in trailersearches:
-			for item in response['videos']['results']:
-				if search.lower() in Utils.fetch(item, 'name').lower() or search in Utils.fetch(item, 'type').lower():
-					Utils.notify(header=search.title() + ' Found:', message='Playing ' + str(Utils.fetch(item, 'type')).title() + '...', sound=False)
-					return Utils.fetch(item, 'key')
-	Utils.notify(header='TV Show', message='Trailer not found.', sound=False)
+		return response['videos']['results'][0]['key']
+	Utils.notify('TV Show trailer not found', sound=False)
 	return ''
+
+def play_tv_trailer(id):
+	trailer = get_tvtrailer(id)
+	url = 'plugin://plugin.video.youtube/play/?video_id=' + trailer
+	xbmc.executebuiltin('PlayMedia(%s,1)' % url)
+
+def play_tv_trailer_fullscreen(id):
+	trailer = get_tvtrailer(id)
+	url = 'plugin://plugin.video.youtube/play/?video_id=' + trailer
+	xbmc.executebuiltin('PlayMedia(%s)' % url)
 
 def extended_movie_info(movie_id=None, dbid=None, cache_time=14):
 	if not movie_id:

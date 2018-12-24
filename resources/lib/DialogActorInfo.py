@@ -55,7 +55,7 @@ def get_actor_window(window_type):
 		def open_tvshow_dialog(self):
 			selection = xbmcgui.Dialog().select(heading='Choose option', list=['Show TV show information', 'Show actor TV show appearances'])
 			if selection == 0:
-				wm.open_tvshow_info(prev_window=self, tvshow_id=self.listitem.getProperty('id'), dbid=self.listitem.getProperty('dbid'))
+				wm.open_tvshow_info(prev_window=self, tmdb_id=self.listitem.getProperty('id'), dbid=self.listitem.getProperty('dbid'))
 			if selection == 1:
 				self.open_credit_dialog(credit_id=self.listitem.getProperty('credit_id'))
 
@@ -69,7 +69,7 @@ def get_actor_window(window_type):
 
 		@ch.click(350)
 		def play_youtube_video(self):
-			PLAYER.play_youtube_video(youtube_id=self.listitem.getProperty('youtube_id'), listitem=self.listitem, window=self)
+			PLAYER.playtube(youtube_id=self.listitem.getProperty('youtube_id'), listitem=self.listitem, window=self)
 
 		@ch.click(132)
 		def show_plot(self):

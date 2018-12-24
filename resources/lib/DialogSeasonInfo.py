@@ -61,7 +61,7 @@ def get_season_window(window_type):
 		@ch.click(10)
 		def play_season_no_resume(self):
 			url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/1' % (self.info['tvdb_id'], self.info['season'])
-			PLAYER.OpenInfoplay(url, listitem=None, window=self, dbid=0)
+			PLAYER.play_from_button(url, listitem=None, window=self, dbid=0)
 
 		@ch.click(445)
 		def show_manage_dialog(self):

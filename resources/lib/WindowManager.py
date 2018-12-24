@@ -4,6 +4,8 @@ from resources.lib import Utils
 
 ADDON_PATH = xbmc.translatePath('special://home/addons/script.extendedinfo').decode('utf-8')
 SKIN_DIR = xbmc.getSkinDir()
+NETFLIX_VIEW = xbmcaddon.Addon().getSetting('netflix_view')
+AUTOPLAY_TRAILER = xbmcaddon.Addon().getSetting('autoplay_trailer')
 
 class WindowManager(object):
 
@@ -20,52 +22,66 @@ class WindowManager(object):
 	def pop_stack(self):
 		if self.window_stack:
 			self.active_dialog = self.window_stack.pop()
+			xbmc.sleep(200)
 			self.active_dialog.doModal()
 		elif self.reopen_window:
+			xbmc.sleep(400)
 			xbmc.executebuiltin('Action(Info)')
 			if self.last_control:
+				xbmc.sleep(50)
 				xbmc.executebuiltin('SetFocus(%s)' % self.last_control)
 
 	def open_movie_info(self, prev_window=None, movie_id=None, dbid=None, name=None, imdb_id=None):
 		Utils.show_busy()
-		from resources.lib.TheMovieDB import get_movie_tmdb_id
+		from resources.lib.TheMovieDB import get_movie_tmdb_id, play_movie_trailer
 		from resources.lib.DialogVideoInfo import get_movie_window
 		if not movie_id:
 			movie_id = get_movie_tmdb_id(imdb_id=imdb_id, dbid=dbid, name=name)
 		movieclass = get_movie_window(DialogXML)
-		if SKIN_DIR == 'skin.estuary':
-			dialog = movieclass(u'script.extendedinfo-DialogVideoInfo-Estuary.xml', ADDON_PATH, id=movie_id, dbid=dbid)
-		elif SKIN_DIR == 'skin.aura' or 'skin.auramod':
-			dialog = movieclass(u'script.extendedinfo-DialogVideoInfo-Aura.xml', ADDON_PATH, id=movie_id, dbid=dbid)
+		if NETFLIX_VIEW == 'true':
+			dialog = movieclass(u'script.extendedinfo-DialogVideoInfo-Netflix.xml', ADDON_PATH, id=movie_id, dbid=dbid)
+			if AUTOPLAY_TRAILER == 'true':
+				play_movie_trailer(movie_id)
 		else:
-			dialog = movieclass(u'script.extendedinfo-DialogVideoInfo.xml', ADDON_PATH, id=movie_id, dbid=dbid)
+			if SKIN_DIR == 'skin.estuary':
+				dialog = movieclass(u'script.extendedinfo-DialogVideoInfo-Estuary.xml', ADDON_PATH, id=movie_id, dbid=dbid)
+			elif SKIN_DIR == 'skin.aura' or 'skin.auramod':
+				dialog = movieclass(u'script.extendedinfo-DialogVideoInfo-Aura.xml', ADDON_PATH, id=movie_id, dbid=dbid)
+			else:
+				dialog = movieclass(u'script.extendedinfo-DialogVideoInfo.xml', ADDON_PATH, id=movie_id, dbid=dbid)
 		Utils.hide_busy()
 		self.open_dialog(dialog, prev_window)
 
-	def open_tvshow_info(self, prev_window=None, tvshow_id=None, dbid=None, tvdb_id=None, imdb_id=None, name=None):
+	def open_tvshow_info(self, prev_window=None, tmdb_id=None, dbid=None, tvdb_id=None, imdb_id=None, name=None):
 		Utils.show_busy()
-		from resources.lib.TheMovieDB import get_show_tmdb_id, search_media
+		dbid = int(dbid) if dbid and int(dbid) > 0 else None
+		from resources.lib.TheMovieDB import get_show_tmdb_id, search_media, play_tv_trailer
 		from resources.lib.DialogTVShowInfo import get_tvshow_window
-		tmdb_id = None
-		if tvshow_id: tmdb_id = tvshow_id
+		from resources.lib.local_db import get_imdb_id_from_db
+		if tmdb_id:
+			pass
 		elif tvdb_id:
 			tmdb_id = get_show_tmdb_id(tvdb_id)
 		elif imdb_id:
 			tmdb_id = get_show_tmdb_id(tvdb_id=imdb_id, source='imdb_id')
-		elif dbid and (int(dbid) > 0):
-			from resources.lib.local_db import get_imdb_id_from_db
+		elif dbid:
 			tvdb_id = get_imdb_id_from_db(media_type='tvshow', dbid=dbid)
 			if tvdb_id:
 				tmdb_id = get_show_tmdb_id(tvdb_id)
 		elif name:
 			tmdb_id = search_media(media_name=name, year='', media_type='tv')
 		tvshow_class = get_tvshow_window(DialogXML)
-		if SKIN_DIR == 'skin.estuary':
-			dialog = tvshow_class(u'script.extendedinfo-DialogVideoInfo-Estuary.xml', ADDON_PATH, tmdb_id=tmdb_id, dbid=dbid)
-		elif SKIN_DIR == 'skin.aura' or 'skin.auramod':
-			dialog = tvshow_class(u'script.extendedinfo-DialogVideoInfo-Aura.xml', ADDON_PATH, tmdb_id=tmdb_id, dbid=dbid)
+		if NETFLIX_VIEW == 'true':
+			dialog = tvshow_class(u'script.extendedinfo-DialogVideoInfo-Netflix.xml', ADDON_PATH, tmdb_id=tmdb_id, dbid=dbid)
+			if AUTOPLAY_TRAILER == 'true':
+				play_tv_trailer(tmdb_id)
 		else:
-			dialog = tvshow_class(u'script.extendedinfo-DialogVideoInfo.xml', ADDON_PATH, tmdb_id=tmdb_id, dbid=dbid)
+			if SKIN_DIR == 'skin.estuary':
+				dialog = tvshow_class(u'script.extendedinfo-DialogVideoInfo-Estuary.xml', ADDON_PATH, tmdb_id=tmdb_id, dbid=dbid)
+			elif SKIN_DIR == 'skin.aura' or 'skin.auramod':
+				dialog = tvshow_class(u'script.extendedinfo-DialogVideoInfo-Aura.xml', ADDON_PATH, tmdb_id=tmdb_id, dbid=dbid)
+			else:
+				dialog = tvshow_class(u'script.extendedinfo-DialogVideoInfo.xml', ADDON_PATH, tmdb_id=tmdb_id, dbid=dbid)
 		Utils.hide_busy()
 		self.open_dialog(dialog, prev_window)
 
@@ -83,12 +99,15 @@ class WindowManager(object):
 				if response['results']:
 					tvshow_id = str(response['results'][0]['id'])
 		season_class = get_season_window(DialogXML)
-		if SKIN_DIR == 'skin.estuary':
-			dialog = season_class(u'script.extendedinfo-DialogVideoInfo-Estuary.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, dbid=dbid)
-		elif SKIN_DIR == 'skin.aura' or 'skin.auramod':
-			dialog = season_class(u'script.extendedinfo-DialogVideoInfo-Aura.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, dbid=dbid)
+		if NETFLIX_VIEW == 'true':
+			dialog = season_class(u'script.extendedinfo-DialogVideoInfo-Netflix.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, dbid=dbid)
 		else:
-			dialog = season_class(u'script.extendedinfo-DialogVideoInfo.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, dbid=dbid)
+			if SKIN_DIR == 'skin.estuary':
+				dialog = season_class(u'script.extendedinfo-DialogVideoInfo-Estuary.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, dbid=dbid)
+			elif SKIN_DIR == 'skin.aura' or 'skin.auramod':
+				dialog = season_class(u'script.extendedinfo-DialogVideoInfo-Aura.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, dbid=dbid)
+			else:
+				dialog = season_class(u'script.extendedinfo-DialogVideoInfo.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, dbid=dbid)
 		Utils.hide_busy()
 		self.open_dialog(dialog, prev_window)
 
@@ -106,12 +125,15 @@ class WindowManager(object):
 				if response['results']:
 					tvshow_id = str(response['results'][0]['id'])
 		ep_class = get_episode_window(DialogXML)
-		if SKIN_DIR == 'skin.estuary':
-			dialog = ep_class(u'script.extendedinfo-DialogVideoInfo-Estuary.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, episode=episode, dbid=dbid)
-		elif SKIN_DIR == 'skin.aura' or 'skin.auramod':
-			dialog = ep_class(u'script.extendedinfo-DialogVideoInfo-Aura.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, episode=episode, dbid=dbid)
+		if NETFLIX_VIEW == 'true':
+			dialog = ep_class(u'script.extendedinfo-DialogVideoInfo-Netflix.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, episode=episode, dbid=dbid)
 		else:
-			dialog = ep_class(u'script.extendedinfo-DialogVideoInfo.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, episode=episode, dbid=dbid)
+			if SKIN_DIR == 'skin.estuary':
+				dialog = ep_class(u'script.extendedinfo-DialogVideoInfo-Estuary.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, episode=episode, dbid=dbid)
+			elif SKIN_DIR == 'skin.aura' or 'skin.auramod':
+				dialog = ep_class(u'script.extendedinfo-DialogVideoInfo-Aura.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, episode=episode, dbid=dbid)
+			else:
+				dialog = ep_class(u'script.extendedinfo-DialogVideoInfo.xml', ADDON_PATH, tvshow_id=tvshow_id, season=season, episode=episode, dbid=dbid)
 		Utils.hide_busy()
 		self.open_dialog(dialog, prev_window)
 
@@ -150,12 +172,15 @@ class WindowManager(object):
 		Utils.show_busy()
 		from resources.lib.DialogVideoList import get_tmdb_window
 		browser_class = get_tmdb_window(DialogXML)
-		if SKIN_DIR == 'skin.estuary':
-			dialog = browser_class(u'script.extendedinfo-VideoList-Estuary.xml', ADDON_PATH, listitems=listitems, filters=filters, mode=mode, list_id=list_id, filter_label=filter_label, type=media_type, search_str=search_str)
-		elif SKIN_DIR == 'skin.aura' or 'skin.auramod':
-			dialog = browser_class(u'script.extendedinfo-VideoList-Aura.xml', ADDON_PATH, listitems=listitems, filters=filters, mode=mode, list_id=list_id, filter_label=filter_label, type=media_type, search_str=search_str)
+		if NETFLIX_VIEW == 'true':
+			dialog = browser_class(u'script.extendedinfo-VideoList-Netflix.xml', ADDON_PATH, listitems=listitems, filters=filters, mode=mode, list_id=list_id, filter_label=filter_label, type=media_type, search_str=search_str)
 		else:
-			dialog = browser_class(u'script.extendedinfo-VideoList.xml', ADDON_PATH, listitems=listitems, filters=filters, mode=mode, list_id=list_id, filter_label=filter_label, type=media_type, search_str=search_str)
+			if SKIN_DIR == 'skin.estuary':
+				dialog = browser_class(u'script.extendedinfo-VideoList-Estuary.xml', ADDON_PATH, listitems=listitems, filters=filters, mode=mode, list_id=list_id, filter_label=filter_label, type=media_type, search_str=search_str)
+			elif SKIN_DIR == 'skin.aura' or 'skin.auramod':
+				dialog = browser_class(u'script.extendedinfo-VideoList-Aura.xml', ADDON_PATH, listitems=listitems, filters=filters, mode=mode, list_id=list_id, filter_label=filter_label, type=media_type, search_str=search_str)
+			else:
+				dialog = browser_class(u'script.extendedinfo-VideoList.xml', ADDON_PATH, listitems=listitems, filters=filters, mode=mode, list_id=list_id, filter_label=filter_label, type=media_type, search_str=search_str)
 		if prev_window:
 			self.add_to_stack(prev_window)
 			prev_window.close()

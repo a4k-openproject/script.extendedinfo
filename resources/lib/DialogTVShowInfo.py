@@ -75,7 +75,7 @@ def get_tvshow_window(window_type):
 
 		@ch.click(150)
 		def open_tvshow_dialog(self):
-			wm.open_tvshow_info(prev_window=self, tvshow_id=self.listitem.getProperty('id'), dbid=self.listitem.getProperty('dbid'))
+			wm.open_tvshow_info(prev_window=self, tmdb_id=self.listitem.getProperty('id'), dbid=self.listitem.getProperty('dbid'))
 
 		@ch.click(250)
 		def open_season_dialog(self):
@@ -136,26 +136,27 @@ def get_tvshow_window(window_type):
 		@ch.click(9)
 		def play_tvshow_no_resume(self):
 			url = 'plugin://plugin.video.openmeta/tv/play/%s/1/1' % self.info['tvdb_id']
-			PLAYER.OpenInfoplay(url, listitem=None, window=self, dbid=0)
+			PLAYER.play_from_button(url, listitem=None, window=self, dbid=0)
 
 		@ch.click(20)
 		def add_tvshow_to_library(self):
-			xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/tv/add_to_library/%s)' % self.info.get('tvdb_id', ''))
-			Utils.notify(header='Added "%s" to library' % self.info.get('TVShowTitle', ''), message='Starting library scan now', icon=self.info['poster'], time=5000, sound=False)
-			Utils.after_add(type='tv')
-			Utils.notify(header='To refresh all content', message='Exit OpenInfo & re-enter', icon=self.info['poster'], time=5000, sound=False)
+			if xbmcgui.Dialog().yesno('OpenInfo', 'Add [B]%s[/B] to library?' % self.info['TVShowTitle']):
+				xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/tv/add_to_library/%s)' % self.info['tvdb_id'])
+				Utils.notify(header='Added [B]%s[/B] to library' % self.info['TVShowTitle'], message='Starting library scan now', icon=self.info['poster'], time=5000, sound=False)
+				Utils.after_add(type='tv')
+				Utils.notify(header='To refresh all content', message='Exit OpenInfo & re-enter', icon=self.info['poster'], time=5000, sound=False)
 
 		@ch.click(21)
 		def remove_tvshow_from_library(self):
-			TVLibrary = xbmcaddon.Addon('plugin.video.openmeta').getSetting('tv_library_folder')
-			tvdb_id = self.info['tvdb_id']
-			if os.path.exists(xbmc.translatePath('%s%s/' % (TVLibrary, tvdb_id))):
-				Utils.get_kodi_json(method='VideoLibrary.RemoveTVShow', params='{"tvshowid": %s}' % int(self.info['dbid']))
-				shutil.rmtree(xbmc.translatePath('%s%s/' % (TVLibrary, tvdb_id)))
-				Utils.notify(header='Removed "%s" from library' % self.info.get('TVShowTitle', ''), message='Exit & re-enter to refresh', icon=self.info['poster'], time=5000, sound=False)
-				Utils.after_add(type='tv')
-			else:
-				Utils.notify(header='To refresh all content', message='Exit OpenInfo & re-enter', icon=self.info['poster'], time=5000, sound=False)
+			if xbmcgui.Dialog().yesno('OpenInfo', 'Remove [B]%s[/B] from library?' % self.info['TVShowTitle']):
+				TVLibrary = xbmcaddon.Addon('plugin.video.openmeta').getSetting('tv_library_folder')
+				if os.path.exists(xbmc.translatePath('%s%s/' % (TVLibrary, self.info['tvdb_id']))):
+					Utils.get_kodi_json(method='VideoLibrary.RemoveTVShow', params='{"tvshowid": %s}' % int(self.info['dbid']))
+					shutil.rmtree(xbmc.translatePath('%s%s/' % (TVLibrary, self.info['tvdb_id'])))
+					Utils.notify(header='Removed [B]%s[/B] from library' % self.info['TVShowTitle'], message='Exit & re-enter to refresh', icon=self.info['poster'], time=5000, sound=False)
+					Utils.after_add(type='tv')
+				else:
+					Utils.notify(header='To refresh all content', message='Exit OpenInfo & re-enter', icon=self.info['poster'], time=5000, sound=False)
 
 		@ch.click(132)
 		def open_text(self):
@@ -165,5 +166,13 @@ def get_tvshow_window(window_type):
 		@ch.click(1150)
 		def play_youtube_video(self):
 			PLAYER.playtube(self.listitem.getProperty('youtube_id'), listitem=self.listitem, window=self)
+
+		@ch.click(28)
+		def play_tv_trailer_button(self):
+			TheMovieDB.play_tv_trailer(self.info['id'])
+
+		@ch.click(29)
+		def stop_tv_trailer_button(self):
+			 xbmc.executebuiltin('PlayerControl(Stop)')
 
 	return DialogTVShowInfo

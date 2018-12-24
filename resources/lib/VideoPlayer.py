@@ -17,6 +17,17 @@ class VideoPlayer(xbmc.Player):
 	def onPlayBackStarted(self):
 		self.stopped = False
 
+	def wait_for_video_end(self):
+		xbmc.sleep(500)
+		while not self.stopped:
+			xbmc.sleep(200)
+		self.stopped = False
+
+	def wait_for_video_start(self):
+		xbmc.sleep(500)
+		while not xbmc.Player().isPlayingVideo():
+			xbmc.sleep(200)
+
 	def play(self, url, listitem, window=False):
 		if window and window.window_type == 'dialog':
 			wm.add_to_stack(window)
@@ -26,11 +37,23 @@ class VideoPlayer(xbmc.Player):
 			self.wait_for_video_end()
 			return wm.pop_stack()
 
+	def play_from_button(self, url, listitem, window=False, dbid=0):
+		if xbmc.Player().isPlayingVideo():
+			xbmc.Player().stop()
+		if dbid != 0 :
+			item = '{"movieid": %s}' % dbid
+		else:
+			item = '{"file": "%s"}' % url
+		Utils.get_kodi_json(method='Player.Open', params='{"item": %s, "options": {"resume": true}}' % item)
+		self.wait_for_video_start()
+		window.close()
+		
+
 	def OpenInfoplay(self, url, listitem, window=False, dbid=0):
 		if window and window.window_type == 'dialog':
 			wm.add_to_stack(window)
 			window.close()
-		if dbid != 0 :
+		if dbid != 0:
 			item = '{"movieid": %s}' % dbid
 		else:
 			item = '{"file": "%s"}' % url
@@ -42,15 +65,5 @@ class VideoPlayer(xbmc.Player):
 	def playtube(self, youtube_id=False, listitem=None, window=False):
 		url = 'plugin://plugin.video.youtube/play/?video_id=%s' % youtube_id
 		self.OpenInfoplay(url=url, listitem=listitem, window=window)
-
-	def play_youtube_video(self, youtube_id='', listitem=None, window=False):
-		url = 'plugin://plugin.video.youtube/play/?video_id=%s' % youtube_id
-		self.OpenInfoplay(url=url, listitem=listitem, window=window)
-
-	def wait_for_video_end(self):
-		xbmc.sleep(500)
-		while not self.stopped:
-			xbmc.sleep(200)
-		self.stopped = False
 
 PLAYER = VideoPlayer()
