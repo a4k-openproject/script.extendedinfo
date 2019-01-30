@@ -88,16 +88,10 @@ def get_tmdb_window(window_type):
 			if self.type == 'tv':
 				imdb_id = Utils.fetch(TheMovieDB.get_tvshow_ids(item_id), 'imdb_id')
 				tvdb_id = Utils.fetch(TheMovieDB.get_tvshow_ids(item_id), 'tvdb_id')
-			elif self.type == 'episode':
-				tvdb_id = self.listitem.getProperty('tvdb_id')
-				imdb_id = self.listitem.getProperty('imdb_id')
 			else:
 				imdb_id = TheMovieDB.get_imdb_id_from_movie_id(item_id)
-			if self.type == 'tv' or self.type == 'episode':
-				if self.listitem.getProperty('dbid'):
-					listitems = ['Play']
-				else:
-					listitems = ['Play first episode']
+			if self.listitem.getProperty('TVShowTitle'):
+				listitems = ['Play first episode']
 			else:
 				listitems = ['Play']
 			if self.listitem.getProperty('dbid'):
@@ -107,56 +101,57 @@ def get_tmdb_window(window_type):
 			listitems += ['Trailer']
 			selection = xbmcgui.Dialog().select(heading='Choose option', list=listitems)
 			if selection == 0:
-				if self.type == 'tv' or self.type == 'episode':
-					if self.listitem.getProperty('dbid'):
-						url = 'plugin://plugin.video.openmeta/tv/play/%s/1/1' % tvdb_id
-					else:
-						url = 'plugin://plugin.video.openmeta/tv/play/%s/1/1' % tvdb_id
+				if self.listitem.getProperty('TVShowTitle'):
+					url = 'plugin://plugin.video.openmeta/tv/play/%s/1/1' % tvdb_id
+					PLAYER.play_from_button(url, listitem=None, window=self, dbid=0)
 				else:
 					if self.listitem.getProperty('dbid'):
-						url = 'temp'
+						dbid = self.listitem.getProperty('dbid')
+						url = ''
 					else:
+						dbid = 0
 						url = 'plugin://plugin.video.openmeta/movies/play/tmdb/%s' % item_id
-				PLAYER.OpenInfoplay(url, listitem=None, dbid=dbid, window=self)
+					PLAYER.play_from_button(url, listitem=None, window=self, type='movieid', dbid=dbid)
 			if selection == 1:
-				if self.type == 'tv' or self.type == 'episode':
+				if self.listitem.getProperty('TVShowTitle'):
 					TVLibrary = xbmcaddon.Addon('plugin.video.openmeta').getSetting('tv_library_folder')
 					if self.listitem.getProperty('dbid'):
 						Utils.get_kodi_json(method='VideoLibrary.RemoveTVShow', params='{"tvshowid": %s}' % dbid)
 						if os.path.exists(xbmc.translatePath('%s%s/' % (TVLibrary, tvdb_id))):
 							shutil.rmtree(xbmc.translatePath('%s%s/' % (TVLibrary, tvdb_id)))
-							Utils.notify(header='Removed "%s" from library' % self.listitem.getProperty('TVShowTitle'), message='Refreshing %s list' % self.type, icon=self.listitem.getProperty('poster'), time=5000, sound=False)
-							Utils.after_add(type='tvshow')
+							Utils.after_add(type='tv')
+							Utils.notify(header='[B]%s[/B]' % self.listitem.getProperty('TVShowTitle'), message='Removed from library', icon=self.listitem.getProperty('poster'), time=5000, sound=False)
+							xbmc.sleep(250)
 							self.update(force_update=True)
 							self.getControl(500).selectItem(self.position)
-						else:
-							Utils.notify(header='"%s" not added by OpenMeta' % self.listitem.getProperty('TVShowTitle'), message='Needs manual deletion', icon=self.listitem.getProperty('poster'), time=5000, sound=False)
 					else:
-						xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/tv/add_to_library/%s)' % tvdb_id)
-						Utils.notify(header='Added "%s" to library' % self.listitem.getProperty('TVShowTitle'), message='Starting library scan now', icon=self.listitem.getProperty('poster'), time=5000, sound=False)
+						if xbmcgui.Dialog().yesno('OpenInfo', 'Add [B]%s[/B] to library?' % self.listitem.getProperty('TVShowTitle')):
+							xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/tv/add_to_library/%s)' % tvdb_id)
+							Utils.after_add(type='tv')
+							Utils.notify(header='[B]%s[/B] added to library' % self.listitem.getProperty('TVShowTitle'), message='Exit & re-enter to refresh', icon=self.listitem.getProperty('poster'), time=5000, sound=False)
 				else:
-					MovieLibrary = xbmcaddon.Addon('plugin.video.openmeta').getSetting('movies_library_folder')
 					if self.listitem.getProperty('dbid'):
-						Utils.get_kodi_json(method='VideoLibrary.RemoveMovie', params='{"movieid": %s}' % dbid)
-						if os.path.exists(xbmc.translatePath('%s%s/' % (MovieLibrary, imdb_id))):
-							shutil.rmtree(xbmc.translatePath('%s%s/' % (MovieLibrary, imdb_id)))
-							Utils.notify(header='Removed "%s" from library' % self.listitem.getProperty('title'), message='Exit &amp; re-enter to refresh', icon=self.listitem.getProperty('poster'), time=5000, sound=False)
-						else:
-							Utils.notify(header='"%s" not added by OpenMeta' % self.listitem.getProperty('title'), message='Needs manual deletion', icon=self.listitem.getProperty('poster'), time=5000, sound=False)
+						if xbmcgui.Dialog().yesno('OpenInfo', 'Remove [B]%s[/B] from library?' % self.listitem.getProperty('title')):
+							Utils.get_kodi_json(method='VideoLibrary.RemoveMovie', params='{"movieid": %s}' % dbid)
+							MovieLibrary = xbmcaddon.Addon('plugin.video.openmeta').getSetting('movies_library_folder')
+							if os.path.exists(xbmc.translatePath('%s%s/' % (MovieLibrary, imdb_id))):
+								shutil.rmtree(xbmc.translatePath('%s%s/' % (MovieLibrary, imdb_id)))
+								Utils.after_add(type='movie')
+								Utils.notify(header='[B]%s[/B]' % self.listitem.getProperty('title'), message='Removed from library', icon=self.listitem.getProperty('poster'), time=5000, sound=False)
+								xbmc.sleep(250)
+								self.update(force_update=True)
+								self.getControl(500).selectItem(self.position)
 					else:
-						xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/movies/add_to_library/tmdb/%s)' % item_id)
-						Utils.notify(header='Added "%s" to library' % self.listitem.getProperty('title'), message='Starting library scan now', icon=self.listitem.getProperty('poster'), time=5000, sound=False)
-				Utils.after_add(type=self.type)
-				self.update(force_update=True)
-				self.getControl(500).selectItem(self.position)
+						if xbmcgui.Dialog().yesno('OpenInfo', 'Add [B]%s[/B] to library?' % self.listitem.getProperty('title')):
+							xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/movies/add_to_library/tmdb/%s)' % item_id)
+							Utils.after_add(type='movie')
+							Utils.notify(header='[B]%s[/B] added to library' % self.listitem.getProperty('title'), message='Exit & re-enter to refresh', icon=self.listitem.getProperty('poster'), time=5000, sound=False)
 			if selection == 2:
-				if self.type == 'tv':
-					url = 'plugin://script.extendedinfo?info=playtvtrailer&&id=%s' % item_id
-				elif self.type == 'episode':
-					url = 'plugin://script.extendedinfo?info=playtvtrailer&&tvdb_id=%s' % tvdb_id
-				elif self.type == 'movie':
-					url = 'plugin://script.extendedinfo?info=playtrailer&&id=%s' % item_id
-				PLAYER.OpenInfoplay(url, listitem=None, dbid=0, window=self)
+				if self.listitem.getProperty('TVShowTitle'):
+					url = 'plugin://script.extendedinfo?info=playtvtrailer&&id=' + item_id
+				else:
+					url = 'plugin://script.extendedinfo?info=playtrailer&&id=' + item_id
+				PLAYER.play(url, listitem=None, window=self)
 
 		@ch.click(5001)
 		def get_sort_type(self):
@@ -237,9 +232,9 @@ def get_tmdb_window(window_type):
 				value = '%s-01-01' % result
 				label = ' > ' + result
 			if self.type == 'tv':
-				self.add_filter('first_air_date.%s' % order, value, 'First aired', label)
+				self.add_filter('first_air_date.' + order, value, 'First aired', label)
 			else:
-				self.add_filter('primary_release_date.%s' % order, value, 'Year', label)
+				self.add_filter('primary_release_date.' + order, value, 'Year', label)
 			self.mode = 'filter'
 			self.page = 1
 			self.update()
@@ -334,7 +329,7 @@ def get_tmdb_window(window_type):
 			if self.mode == 'search':
 				url = 'search/multi?query=%s&page=%i&include_adult=%s&' % (urllib.quote_plus(self.search_str), self.page, xbmcaddon.Addon().getSetting('include_adults'))
 				if self.search_str:
-					self.filter_label = 'Search for:  %s' % self.search_str
+					self.filter_label = 'Results for:  ' + self.search_str
 				else:
 					self.filter_label = ''
 			elif self.mode == 'list':

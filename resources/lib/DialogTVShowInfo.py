@@ -1,5 +1,5 @@
 import os, shutil
-import xbmc, xbmcgui, xbmcaddon
+import xbmc, xbmcgui
 from resources.lib import Utils
 from resources.lib import ImageTools
 from resources.lib import TheMovieDB
@@ -15,28 +15,49 @@ def get_tvshow_window(window_type):
 	class DialogTVShowInfo(DialogBaseInfo, window_type):
 
 		def __init__(self, *args, **kwargs):
-			super(DialogTVShowInfo, self).__init__(*args, **kwargs)
-			self.type = 'TVShow'
-			data = TheMovieDB.extended_tvshow_info(tvshow_id=kwargs.get('tmdb_id', False), dbid=self.dbid)
-			if not data:
-				return None
-			self.info, self.data = data
-			if 'dbid' not in self.info:
-				self.info['poster'] = Utils.get_file(self.info.get('poster', ''))
-			self.info['ImageFilter'], self.info['ImageColor'] = ImageTools.filter_image(input_img=self.info.get('poster', ''), radius=25)
-			self.listitems = [
-				(250, self.data['seasons']),
-				(150, self.data['similar']),
-				(1150, self.data['videos']),
-				(1000, self.data['actors']),
-				(750, self.data['crew']),
-				(550, self.data['studios']),
-				(1450, self.data['networks']),
-				(650, TheMovieDB.merge_with_cert_desc(self.data['certifications'], 'tv')),
-				(850, self.data['genres']),
-				(1250, self.data['images']),
-				(1350, self.data['backdrops'])
-				]
+			if Utils.NETFLIX_VIEW == 'true':
+				super(DialogTVShowInfo, self).__init__(*args, **kwargs)
+				self.type = 'TVShow'
+				data = TheMovieDB.extended_tvshow_info(tvshow_id=kwargs.get('tmdb_id', False), dbid=self.dbid)
+				if not data:
+					return None
+				self.info, self.data = data
+				if 'dbid' not in self.info:
+					self.info['poster'] = Utils.get_file(self.info.get('poster', ''))
+				self.listitems = [
+					(250, self.data['seasons']),
+					(150, self.data['similar']),
+					(1000, self.data['actors']),
+					(750, self.data['crew']),
+					(550, self.data['studios']),
+					(1450, self.data['networks']),
+					(850, self.data['genres']),
+					(1250, self.data['images']),
+					(1350, self.data['backdrops'])
+					]
+			else:
+				super(DialogTVShowInfo, self).__init__(*args, **kwargs)
+				self.type = 'TVShow'
+				data = TheMovieDB.extended_tvshow_info(tvshow_id=kwargs.get('tmdb_id', False), dbid=self.dbid)
+				if not data:
+					return None
+				self.info, self.data = data
+				if 'dbid' not in self.info:
+					self.info['poster'] = Utils.get_file(self.info.get('poster', ''))
+				self.info['ImageFilter'], self.info['ImageColor'] = ImageTools.filter_image(input_img=self.info.get('poster', ''), radius=25)
+				self.listitems = [
+					(250, self.data['seasons']),
+					(150, self.data['similar']),
+					(1150, self.data['videos']),
+					(1000, self.data['actors']),
+					(750, self.data['crew']),
+					(550, self.data['studios']),
+					(1450, self.data['networks']),
+					(650, TheMovieDB.merge_with_cert_desc(self.data['certifications'], 'tv')),
+					(850, self.data['genres']),
+					(1250, self.data['images']),
+					(1350, self.data['backdrops'])
+					]
 
 		def onInit(self):
 			self.get_youtube_vids('%s tv' % self.info['title'])
@@ -134,7 +155,7 @@ def get_tvshow_window(window_type):
 			wm.open_video_list(prev_window=self, mode='rating', media_type='tv')
 
 		@ch.click(9)
-		def play_tvshow_no_resume(self):
+		def play_tvshow(self):
 			url = 'plugin://plugin.video.openmeta/tv/play/%s/1/1' % self.info['tvdb_id']
 			PLAYER.play_from_button(url, listitem=None, window=self, dbid=0)
 
@@ -142,25 +163,21 @@ def get_tvshow_window(window_type):
 		def add_tvshow_to_library(self):
 			if xbmcgui.Dialog().yesno('OpenInfo', 'Add [B]%s[/B] to library?' % self.info['TVShowTitle']):
 				xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/tv/add_to_library/%s)' % self.info['tvdb_id'])
-				Utils.notify(header='Added [B]%s[/B] to library' % self.info['TVShowTitle'], message='Starting library scan now', icon=self.info['poster'], time=5000, sound=False)
 				Utils.after_add(type='tv')
-				Utils.notify(header='To refresh all content', message='Exit OpenInfo & re-enter', icon=self.info['poster'], time=5000, sound=False)
+				Utils.notify(header='[B]%s[/B] added to library' % self.info['TVShowTitle'], message='Exit & re-enter to refresh', icon=self.info['poster'], time=5000, sound=False)
 
 		@ch.click(21)
 		def remove_tvshow_from_library(self):
 			if xbmcgui.Dialog().yesno('OpenInfo', 'Remove [B]%s[/B] from library?' % self.info['TVShowTitle']):
-				TVLibrary = xbmcaddon.Addon('plugin.video.openmeta').getSetting('tv_library_folder')
-				if os.path.exists(xbmc.translatePath('%s%s/' % (TVLibrary, self.info['tvdb_id']))):
+				if os.path.exists(xbmc.translatePath('%s%s/' % (Utils.OPENMETA_TV_FOLDER, self.info['tvdb_id']))):
 					Utils.get_kodi_json(method='VideoLibrary.RemoveTVShow', params='{"tvshowid": %s}' % int(self.info['dbid']))
-					shutil.rmtree(xbmc.translatePath('%s%s/' % (TVLibrary, self.info['tvdb_id'])))
-					Utils.notify(header='Removed [B]%s[/B] from library' % self.info['TVShowTitle'], message='Exit & re-enter to refresh', icon=self.info['poster'], time=5000, sound=False)
+					shutil.rmtree(xbmc.translatePath('%s%s/' % (Utils.OPENMETA_TV_FOLDER, self.info['tvdb_id'])))
 					Utils.after_add(type='tv')
-				else:
-					Utils.notify(header='To refresh all content', message='Exit OpenInfo & re-enter', icon=self.info['poster'], time=5000, sound=False)
+					Utils.notify(header='Removed [B]%s[/B] from library' % self.info['TVShowTitle'], message='Exit & re-enter to refresh', icon=self.info['poster'], time=5000, sound=False)
 
 		@ch.click(132)
 		def open_text(self):
-			wm.open_textviewer(header='Overview', text=self.info['Plot'], color=self.info['ImageColor'])
+			wm.open_textviewer(header='Overview', text=self.info['Plot'], color='FFFFFFFF')
 
 		@ch.click(350)
 		@ch.click(1150)
@@ -173,6 +190,6 @@ def get_tvshow_window(window_type):
 
 		@ch.click(29)
 		def stop_tv_trailer_button(self):
-			 xbmc.executebuiltin('PlayerControl(Stop)')
+			xbmc.executebuiltin('PlayerControl(Stop)')
 
 	return DialogTVShowInfo

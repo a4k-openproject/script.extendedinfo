@@ -2532,7 +2532,7 @@
 						<width>852</width>
 						<height>168</height>
 						<aspectratio align="right">keep</aspectratio>
-						<texture background="true" fallback="moviedb.png">$INFO[Window.Property(movie.Logo)]</texture>
+						<texture background="true" fallback="tmdb/moviedb.png">$INFO[Window.Property(movie.Logo)]</texture>
 					</control>
 				</control>
 				<control type="group">

@@ -14,20 +14,34 @@ def get_episode_window(window_type):
 	class DialogEpisodeInfo(DialogBaseInfo, window_type):
 
 		def __init__(self, *args, **kwargs):
-			super(DialogEpisodeInfo, self).__init__(*args, **kwargs)
-			self.type = 'Episode'
-			self.tvshow_id = kwargs.get('tvshow_id')
-			data = TheMovieDB.extended_episode_info(tvshow_id=self.tvshow_id, season=kwargs.get('season'), episode=kwargs.get('episode'))
-			if not data:
-				return None
-			self.info, self.data = data
-			self.info['ImageFilter'], self.info['ImageColor'] = ImageTools.filter_image(input_img=self.info.get('thumb', ''), radius=25)
-			self.listitems = [
-				(1150, self.data['videos']),
-				(1000, self.data['actors'] + self.data['guest_stars']),
-				(750, self.data['crew']),
-				(1350, self.data['images'])
-				]
+			if Utils.NETFLIX_VIEW == 'true':
+				super(DialogEpisodeInfo, self).__init__(*args, **kwargs)
+				self.type = 'Episode'
+				self.tvshow_id = kwargs.get('tvshow_id')
+				data = TheMovieDB.extended_episode_info(tvshow_id=self.tvshow_id, season=kwargs.get('season'), episode=kwargs.get('episode'))
+				if not data:
+					return None
+				self.info, self.data = data
+				self.listitems = [
+					(1000, self.data['actors'] + self.data['guest_stars']),
+					(750, self.data['crew']),
+					(1350, self.data['images'])
+					]
+			else:
+				super(DialogEpisodeInfo, self).__init__(*args, **kwargs)
+				self.type = 'Episode'
+				self.tvshow_id = kwargs.get('tvshow_id')
+				data = TheMovieDB.extended_episode_info(tvshow_id=self.tvshow_id, season=kwargs.get('season'), episode=kwargs.get('episode'))
+				if not data:
+					return None
+				self.info, self.data = data
+				self.info['ImageFilter'], self.info['ImageColor'] = ImageTools.filter_image(input_img=self.info.get('thumb', ''), radius=25)
+				self.listitems = [
+					(1150, self.data['videos']),
+					(1000, self.data['actors'] + self.data['guest_stars']),
+					(750, self.data['crew']),
+					(1350, self.data['images'])
+					]
 
 		def onInit(self):
 			super(DialogEpisodeInfo, self).onInit()
@@ -46,7 +60,7 @@ def get_episode_window(window_type):
 
 		@ch.click(132)
 		def open_text(self):
-			wm.open_textviewer(header='Overview', text=self.info['Plot'], color=self.info['ImageColor'])
+			wm.open_textviewer(header='Overview', text=self.info['Plot'], color='FFFFFFFF')
 
 		@ch.click(350)
 		@ch.click(1150)
@@ -54,9 +68,14 @@ def get_episode_window(window_type):
 			PLAYER.playtube(self.listitem.getProperty('youtube_id'), listitem=self.listitem, window=self)
 
 		@ch.click(8)
-		def play_episode_no_resume(self):
-			url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/%s' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
-			PLAYER.play_from_button(url, listitem=None, window=self, dbid=0)
+		def play_episode(self):
+			if self.dbid:
+				dbid = self.dbid
+				url = ''
+			else:
+				dbid = 0
+				url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/%s' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
+			PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
 
 		@ch.click(445)
 		def show_manage_dialog(self):

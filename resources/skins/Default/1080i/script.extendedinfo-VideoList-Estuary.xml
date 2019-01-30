@@ -58,7 +58,7 @@
 				</control>
 			</control>
 			<control type="image">
-				<texture>moviedb.png</texture>
+				<texture>tmdb/moviedb.png</texture>
 				<posx>46</posx>
 				<posy>150</posy>
 				<width>380</width>
@@ -198,7 +198,7 @@
 							<width>228</width>
 							<height>67</height>
 							<posy>320</posy>
-							<textcolor>99FFFFFF</textcolor>
+							<textcolor>FF999999</textcolor>
 							<align>center</align>
 							<font>font12</font>
 							<label>$INFO[ListItem.Label]</label>

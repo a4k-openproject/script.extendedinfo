@@ -15,8 +15,8 @@ def handle_youtube_videos(results, extended=False):
 		video = {
 			'thumb': thumb,
 			'youtube_id': video_id,
-			'Play': 'plugin://script.extendedinfo?info=youtubevideo&&id=%s' % video_id,
-			'path': 'plugin://script.extendedinfo?info=youtubevideo&&id=%s' % video_id,
+			'Play': 'plugin://script.extendedinfo?info=youtubevideo&&id=' + video_id,
+			'path': 'plugin://script.extendedinfo?info=youtubevideo&&id=' + video_id,
 			'Description': item['snippet']['description'],
 			'title': item['snippet']['title'],
 			'channel_title': item['snippet']['channelTitle'],
@@ -67,12 +67,12 @@ def handle_youtube_videos(results, extended=False):
 
 def search_youtube(search_str='', hd='', limit=10, extended=True, page='', filter_str=''):
 	if page:
-		page = '&pageToken=%s' % page
+		page = '&pageToken=' + page
 	if hd and not hd == 'false':
 		hd = '&hd=true'
 	else:
 		hd = ''
-	search_str = '&q=%s' % Utils.url_quote(search_str.replace('"', ''))
+	search_str = '&q=' + Utils.url_quote(search_str.replace('"', ''))
 	url = 'https://www.googleapis.com/youtube/v3/search?part=id%%2Csnippet&type=video%s%s&order=relevance&%skey=%s%s&maxResults=%i' % (page, search_str, filter_str, API_key, hd, int(limit))
 	results = Utils.get_JSON_response(url=url, cache_days=0.5, folder='YouTube')
 	videos = handle_youtube_videos(results['items'], extended=extended)

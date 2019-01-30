@@ -3,18 +3,9 @@
 	<defaultcontrol always="true">500</defaultcontrol>
 	<controls>
 		<control type="image">
-			<texture fallback="common/black.png">black</texture>
 			<width>1920</width>
 			<height>1080</height>
-			<fadetime>300</fadetime>
-			<animation effect="fade" end="100" time="560">WindowOpen</animation>
-		</control>
-		<control type="image">
-			<texture>common/diffuseoverlay.jpg</texture>
-			<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
-			<width>1920</width>
-			<height>1080</height>
-			<animation effect="fade" end="100" time="360">WindowOpen</animation>
+			<texture>common/black.png</texture>
 		</control>
 		<control type="group">
 			<control type="group">
@@ -66,33 +57,31 @@
 				<aspectratio>scale</aspectratio>
 			</control>
 			<control type="group">
-				<posy>0</posy>
 				<animation type="WindowOpen" reversible="false">
 					<effect type="slide" start="0,1000" end="0,0" delay="0" tween="sine" time="1000" />
 					<effect type="fade" start="0" end="100" delay="0" tween="sine" time="1500" />
 				</animation>
-
 				<control type="group">
 					<posx>0</posx>
 					<width>1018</width>
-
 					<control type="image" id="55444">
 						<visible>!String.IsEqual(Window.Property(Type),movies)</visible>
 						<height>265</height>
 						<width>684</width>
 						<aligny>top</aligny>
 						<aspectratio>keep</aspectratio>
-						<texture background="true">http://localhost:52307/getartwork&amp;title=$INFO[Container(500).ListItem.Title]&amp;type=clearlogo&amp;mediatype=tvshow</texture>
+						<texture background="true">http://localhost:52307/getpvrthumb&amp;title=$ESCINFO[Container(500).ListItem.Title]&amp;type=clearlogo&amp;mediatype=tvshow</texture>
 					</control>
 					<control type="image" id="55445">
 						<visible>String.IsEqual(Window.Property(Type),movies)</visible>
 						<height>265</height>
 						<width>684</width>
-						<texture background="true">http://localhost:52307/getpvrthumb&amp;title=$INFO[Container(500).ListItem.Title]&amp;type=clearlogo&amp;mediatype=movies</texture>
+						<aligny>top</aligny>
+						<aspectratio>keep</aspectratio>
+						<texture background="true">http://localhost:52307/getpvrthumb&amp;title=$ESCINFO[Container(500).ListItem.Title]&amp;type=clearlogo&amp;mediatype=movies</texture>
 					</control>
 					<control type="label">
 						<visible>String.IsEmpty(Control.GetLabel(55444)) | String.IsEmpty(Control.GetLabel(55445))</visible>
-						<visible>String.IsEmpty(http://localhost:52307/getpvrthumb&amp;title=$INFO[Container(500).ListItem.Title]&amp;type=clearlogo&amp;mediatype=movies) | String.IsEmpty(http://localhost:52307/getartwork&amp;title=$INFO[Container(500).ListItem.Title]&amp;type=clearlogo&amp;mediatype=tvshow)</visible>
 						<posx>50</posx>
 						<posy>50</posy>
 						<width>600</width>
@@ -102,49 +91,41 @@
 						<font>netflix_heading</font>
 						<scroll>true</scroll>
 					</control>
-
 				</control>
 
-				<control type="image">
-					<posx>250</posx>
-					<posy>275</posy>
-					<width>80</width>
-					<height>40</height>
-					<texture colordiffuse="FF383838">halfbox.png</texture>
-				</control>
-
-				<control type="textbox">
+				<control type="label">
 					<posx>260</posx>
 					<posy>275</posy>
-					<width>395</width>
-					<height>300</height>
+					<width>500</width>
+					<height>25</height>
 					<label>[B]$INFO[Container(500).ListItem.Year][/B]</label>
 					<font>font12</font>
 					<textcolor>FF999999</textcolor>
 				</control>
+
 				<control type="image">
 					<posx>40</posx>
 					<posy>270</posy>
 					<width>180</width>
 					<height>40</height>
 					<animation effect="fade" start="100" end="60" time="0" condition="String.IsEmpty(Container(500).ListItem.Rating)">Conditional</animation>
-					<texture fallback="flags/stars/0.0.png" colordiffuse="red">$INFO[Container(500).ListItem.Rating,flags/stars/,.png]</texture>
+					<texture fallback="flags/stars/0.0.png" colordiffuse="FFFF0000">$INFO[Container(500).ListItem.Rating,flags/stars/,.png]</texture>
 				</control>
 				<control type="image">
-					<posx>40</posx>
-					<posy>495</posy>
-					<width>70</width>
-					<height>40</height>
+					<posx>50</posx>
+					<posy>486</posy>
+					<width>52</width>
+					<height>52</height>
 					<aspectratio>keep</aspectratio>
-					<texture colordiffuse="red">netflix/genre.png</texture>
+					<texture colordiffuse="FFFF0000">icons/genre.png</texture>
 				</control>
 
 				<control type="textbox">
-					<posx>130</posx>
+					<posx>120</posx>
 					<posy>495</posy>
 					<width>595</width>
 					<height>300</height>
-					<label>[B]$INFO[Container(500).ListItem.Genre][/B]</label>
+					<label>[I]$INFO[Container(500).ListItem.Genre][/I]</label>
 					<font>font12</font>
 					<textcolor>FF999999</textcolor>
 				</control>
