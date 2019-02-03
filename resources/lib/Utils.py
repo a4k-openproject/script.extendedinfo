@@ -80,9 +80,9 @@ def format_time(time, format=None):
 	elif format == 'm':
 		return minute
 	elif intTime >= 60:
-		return hour + 'h ' + minute + 'm'
+		return '%sh %sm' % (hour, minute)
 	else:
-		return minute + 'm'
+		return 's%m' % minute
 
 def url_quote(input_string):
 	try:
@@ -197,7 +197,7 @@ def get_http(url, headers=False):
 			request = requests.get(url, headers=headers)
 			return request.text
 		except Exception as e:
-			log('get_http: could not get data from ' + url)
+			log('get_http: could not get data from %s' % url)
 			xbmc.sleep(500)
 			succeed += 1
 	return None
@@ -265,9 +265,9 @@ def get_file(url):
 		if r.status_code != 200:
 			return ''
 		data = r.content
-		log('image downloaded: ' + clean_url)
+		log('image downloaded: %s' % clean_url)
 	except Exception as e:
-		log('image download failed: ' + clean_url)
+		log('image download failed: %s' % clean_url)
 		return ''
 	if not data:
 		return ''
@@ -311,14 +311,14 @@ def read_from_file(path='', raw=False):
 		return False
 	try:
 		with open(path) as f:
-			log('opened textfile  ' + path)
+			log('opened textfile  %s' % path)
 			if not raw:
 				result = json.load(f)
 			else:
 				result = f.read()
 		return result
 	except:
-		log('failed to load textfile: ' + path)
+		log('failed to load textfile: %s' % path)
 		return False
 
 def notify(header='', message='', icon=xbmcaddon.Addon().getAddonInfo('icon'), time=5000, sound=True):
@@ -361,7 +361,7 @@ def merge_dict_lists(items, key='job'):
 		else:
 			index = crew_id_list.index(item['id'])
 			if key in crew_list[index]:
-				crew_list[index][key] = crew_list[index][key] + ' / ' + item[key]
+				crew_list[index][key] = '%s / %s' % (crew_list[index][key], item[key])
 	return crew_list
 
 def pass_list_to_skin(name='', data=[], prefix='', handle=None, limit=False):

@@ -38,19 +38,18 @@ class Main:
 				('search_menu', 'Search...')
 				]
 			xbmcplugin.setContent(self.handle, 'addons')
+			base   = 'plugin://script.extendedinfo?info='
+			thumb  = 'special://home/addons/script.extendedinfo/resources/skins/Default/media/tmdb/thumb.png'
+			fanart = 'special://home/addons/script.extendedinfo/resources/skins/Default/media/tmdb/fanart.jpg'
 			for key, value in items:
-				thumb_path  = 'special://home/addons/script.extendedinfo/resources/skins/Default/media/tmdb/thumb.png'
-				fanart_path = 'special://home/addons/script.extendedinfo/resources/skins/Default/media/tmdb/fanart.jpg'
-				url = 'plugin://script.extendedinfo?info=%s' % key
-				li = xbmcgui.ListItem(label=value)
-				li.setArt({'thumb': thumb_path, 'fanart': fanart_path})
+				url = base + key
+				li  = xbmcgui.ListItem(label=value)
+				li.setArt({'thumb': thumb, 'fanart': fanart})
 				xbmcplugin.addDirectoryItem(handle=self.handle, url=url, listitem=li, isFolder=True)
 			for key, value in NoFolder_items:
-				thumb_path  = 'special://home/addons/script.extendedinfo/resources/skins/Default/media/tmdb/thumb.png'
-				fanart_path = 'special://home/addons/script.extendedinfo/resources/skins/Default/media/tmdb/fanart.jpg'
-				url = 'plugin://script.extendedinfo?info=%s' % key
-				li = xbmcgui.ListItem(label=value)
-				li.setArt({'thumb': thumb_path, 'fanart': fanart_path})
+				url = base + key
+				li  = xbmcgui.ListItem(label=value)
+				li.setArt({'thumb': thumb, 'fanart': fanart})
 				xbmcplugin.addDirectoryItem(handle=self.handle, url=url, listitem=li, isFolder=False)
 			xbmcplugin.endOfDirectory(self.handle)
 		xbmcgui.Window(10000).clearProperty('extendedinfo_running')
@@ -77,4 +76,3 @@ class Main:
 
 if (__name__ == '__main__'):
 	Main()
-

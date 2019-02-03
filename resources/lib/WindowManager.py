@@ -35,7 +35,7 @@ class WindowManager(object):
 		movieclass = get_movie_window(DialogXML)
 		if Utils.NETFLIX_VIEW == 'true':
 			dialog = movieclass(u'script.extendedinfo-DialogVideoInfo-Netflix.xml', Utils.ADDON_PATH, id=movie_id, dbid=dbid)
-			if Utils.AUTOPLAY_TRAILER == 'true' and not xbmc.getCondVisibility('VideoPlayer.IsFullscreen') and not xbmc.Player().isPlayingAudio():
+			if Utils.AUTOPLAY_TRAILER == 'true' and not xbmc.getCondVisibility('VideoPlayer.IsFullscreen | Player.HasAudio'):
 				play_movie_trailer(movie_id)
 		else:
 			if Utils.SKIN_DIR == 'skin.estuary':
@@ -68,7 +68,7 @@ class WindowManager(object):
 		tvshow_class = get_tvshow_window(DialogXML)
 		if Utils.NETFLIX_VIEW == 'true':
 			dialog = tvshow_class(u'script.extendedinfo-DialogVideoInfo-Netflix.xml', Utils.ADDON_PATH, tmdb_id=tmdb_id, dbid=dbid)
-			if Utils.AUTOPLAY_TRAILER == 'true' and not xbmc.getCondVisibility('VideoPlayer.IsFullscreen') and not xbmc.Player().isPlayingAudio():
+			if Utils.AUTOPLAY_TRAILER == 'true' and not xbmc.getCondVisibility('VideoPlayer.IsFullscreen | Player.HasAudio'):
 				play_tv_trailer(tmdb_id)
 		else:
 			if Utils.SKIN_DIR == 'skin.estuary':
