@@ -50,9 +50,9 @@ class DialogBaseInfo(object):
 	@Utils.run_async
 	def bounce(self, identifier):
 		self.bouncing = True
-		self.window.setProperty('Bounce.%s' % identifier, 'true')
+		self.window.setProperty('Bounce.' + identifier, 'true')
 		xbmc.sleep(100)
-		self.window.clearProperty('Bounce.%s' % identifier)
+		self.window.clearProperty('Bounce.' + identifier)
 		self.bouncing = False
 
 	def fill_lists(self):

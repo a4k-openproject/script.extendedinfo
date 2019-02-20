@@ -53,7 +53,7 @@ def handle_tmdb_movies(results=[], local_first=True, sortkey='year'):
 			genres = ''
 		tmdb_id = str(Utils.fetch(movie, 'id'))
 		artwork = get_image_urls(poster=movie.get('poster_path'), fanart=movie.get('backdrop_path'))
-		trailer = 'plugin://script.extendedinfo?info=playtrailer&&id=' + tmdb_id
+		trailer = 'plugin://script.extendedinfo?info=playtrailer&&id=%s' % tmdb_id
 		path = 'plugin://script.extendedinfo?info=extendedinfo&&id=%s' % tmdb_id
 		listitem = {
 			'title': Utils.fetch(movie, 'title'),
@@ -167,7 +167,7 @@ def handle_tmdb_episodes(results):
 			'episode': Utils.fetch(item, 'episode_number'),
 			'production_code': Utils.fetch(item, 'production_code'),
 			'season': Utils.fetch(item, 'season_number'),
-			'Rating': Utils.fetch(item, 'vote_average'),
+			'Rating': round(float(Utils.fetch(item, 'vote_average')), 1),
 			'Votes': Utils.fetch(item, 'vote_count'),
 			'Plot': Utils.fetch(item, 'overview'),
 			'id': Utils.fetch(item, 'id'),
@@ -203,7 +203,7 @@ def handle_tmdb_misc(results):
 def handle_tmdb_videos(results):
 	listitems = []
 	for item in results:
-		image = 'https://i.ytimg.com/vi/' + Utils.fetch(item, 'key') + '/0.jpg'
+		image = 'https://i.ytimg.com/vi/%s/0.jpg' % Utils.fetch(item, 'key')
 		listitem = {
 			'thumb': image,
 			'title': Utils.fetch(item, 'name'),
@@ -239,7 +239,7 @@ def handle_tmdb_people(results):
 			'id': str(person['id']),
 			'cast_id': str(Utils.fetch(person, 'cast_id')),
 			'credit_id': str(Utils.fetch(person, 'credit_id')),
-			'path': 'plugin://script.extendedinfo?info=extendedactorinfo&&id=' + str(person['id']),
+			'path': 'plugin://script.extendedinfo?info=extendedactorinfo&&id=%s' % str(person['id']),
 			'deathday': Utils.fetch(person, 'deathday'),
 			'place_of_birth': Utils.fetch(person, 'place_of_birth'),
 			'placeofbirth': Utils.fetch(person, 'place_of_birth'),
@@ -271,7 +271,7 @@ def handle_tmdb_tagged_images(results):
 			'vote_average': Utils.fetch(item, 'vote_average'),
 			'iso_639_1': Utils.fetch(item, 'iso_639_1'),
 			'title': Utils.fetch(item['media'], 'title'),
-			'mediaposter': 'https://image.tmdb.org/t/p/' + 'w500' + Utils.fetch(item['media'], 'poster_path')
+			'mediaposter': 'https://image.tmdb.org/t/p/w500%s' % Utils.fetch(item['media'], 'poster_path')
 			}
 		image.update(artwork)
 		images.append(image)
@@ -337,26 +337,26 @@ def get_credit_info(credit_id):
 def get_image_urls(poster=None, still=None, fanart=None, profile=None):
 	images = {}
 	if poster:
-		images['poster'] = 'https://image.tmdb.org/t/p/w500' + poster
-		images['poster_original'] = 'https://image.tmdb.org/t/p/original' + poster
-		images['original'] = 'https://image.tmdb.org/t/p/original' + poster
-		images['poster_small'] = 'https://image.tmdb.org/t/p/w342' + poster
-		images['thumb'] = 'https://image.tmdb.org/t/p/w342' + poster
+		images['poster'] = 'https://image.tmdb.org/t/p/w500%s' % poster
+		images['poster_original'] = 'https://image.tmdb.org/t/p/original%s' % poster
+		images['original'] = 'https://image.tmdb.org/t/p/original%s' % poster
+		images['poster_small'] = 'https://image.tmdb.org/t/p/w342%s' % poster
+		images['thumb'] = 'https://image.tmdb.org/t/p/w342%s' % poster
 	if still:
-		images['thumb'] = 'https://image.tmdb.org/t/p/w300' + still
-		images['still'] = 'https://image.tmdb.org/t/p/w300' + still
-		images['still_original'] = 'https://image.tmdb.org/t/p/original' + still
-		images['still_small'] = 'https://image.tmdb.org/t/p/w185' + still
+		images['thumb'] = 'https://image.tmdb.org/t/p/w300%s' % still
+		images['still'] = 'https://image.tmdb.org/t/p/w300%s' % still
+		images['still_original'] = 'https://image.tmdb.org/t/p/original%s' % still
+		images['still_small'] = 'https://image.tmdb.org/t/p/w185%s' % still
 	if fanart:
-		images['fanart'] = 'https://image.tmdb.org/t/p/w1280' + fanart
-		images['fanart_original'] = 'https://image.tmdb.org/t/p/original' + fanart
-		images['original'] = 'https://image.tmdb.org/t/p/original' + fanart
-		images['fanart_small'] = 'https://image.tmdb.org/t/p/w780' + fanart
+		images['fanart'] = 'https://image.tmdb.org/t/p/w1280%s' % fanart
+		images['fanart_original'] = 'https://image.tmdb.org/t/p/original%s' % fanart
+		images['original'] = 'https://image.tmdb.org/t/p/original%s' % fanart
+		images['fanart_small'] = 'https://image.tmdb.org/t/p/w780%s' % fanart
 	if profile:
-		images['poster'] = 'https://image.tmdb.org/t/p/w500' + profile
-		images['poster_original'] = 'https://image.tmdb.org/t/p/original' + profile
-		images['poster_small'] = 'https://image.tmdb.org/t/p/w342' + profile
-		images['thumb'] = 'https://image.tmdb.org/t/p/w342' + profile
+		images['poster'] = 'https://image.tmdb.org/t/p/w500%s' % profile
+		images['poster_original'] = 'https://image.tmdb.org/t/p/original%s' % profile
+		images['poster_small'] = 'https://image.tmdb.org/t/p/w342%s' % profile
+		images['thumb'] = 'https://image.tmdb.org/t/p/w342%s' % profile
 	return images
 
 def get_movie_tmdb_id(imdb_id=None, name=None, dbid=None):
@@ -392,7 +392,7 @@ def get_show_tmdb_id(tvdb_id=None, db=None, imdb_id=None):
 		id = tvdb_id
 		db = 'tvdb_id'
 	elif imdb_id:
-		id = 'tt'+imdb_id
+		id = 'tt%s' % imdb_id
 		db = 'imdb_id'
 	response = get_tmdb_data('find/%s?external_source=%s&language=%s&' % (id, db, xbmcaddon.Addon().getSetting('LanguageID')), 30)
 	if response:
@@ -408,16 +408,6 @@ def get_trailer(movie_id):
 	Utils.notify('Movie trailer not found', sound=False)
 	return ''
 
-def play_movie_trailer(id):
-	trailer = get_trailer(id)
-	url = 'plugin://plugin.video.youtube/play/?video_id=' + trailer
-	xbmc.executebuiltin('PlayMedia(%s,1)' % url)
-
-def play_movie_trailer_fullscreen(id):
-	trailer = get_trailer(id)
-	url = 'plugin://plugin.video.youtube/play/?video_id=' + trailer
-	xbmc.executebuiltin('PlayMedia(%s)' % url)
-
 def get_tvtrailer(tvshow_id):
 	response = get_tmdb_data('tv/%s?append_to_response=videos,null,%s&language=%s&' % (tvshow_id, xbmcaddon.Addon().getSetting('LanguageID'), xbmcaddon.Addon().getSetting('LanguageID')), 30)
 	if response and 'videos' in response and response['videos']['results']:
@@ -425,15 +415,23 @@ def get_tvtrailer(tvshow_id):
 	Utils.notify('TV Show trailer not found', sound=False)
 	return ''
 
+def play_movie_trailer(id):
+	trailer = get_trailer(id)
+	xbmc.executebuiltin('PlayMedia(plugin://plugin.video.youtube/play/?video_id=%s,1)' % trailer)
+	xbmc.executebuiltin('Dialog.Close(busydialog)')
+
+def play_movie_trailer_fullscreen(id):
+	trailer = get_trailer(id)
+	xbmc.executebuiltin('PlayMedia(plugin://plugin.video.youtube/play/?video_id=%s)' % trailer)
+
 def play_tv_trailer(id):
 	trailer = get_tvtrailer(id)
-	url = 'plugin://plugin.video.youtube/play/?video_id=' + trailer
-	xbmc.executebuiltin('PlayMedia(%s,1)' % url)
+	xbmc.executebuiltin('PlayMedia(plugin://plugin.video.youtube/play/?video_id=%s,1)' % trailer)
+	xbmc.executebuiltin('Dialog.Close(busydialog)')
 
 def play_tv_trailer_fullscreen(id):
 	trailer = get_tvtrailer(id)
-	url = 'plugin://plugin.video.youtube/play/?video_id=' + trailer
-	xbmc.executebuiltin('PlayMedia(%s)' % url)
+	xbmc.executebuiltin('PlayMedia(plugin://plugin.video.youtube/play/?video_id=%s)' % trailer)
 
 def extended_movie_info(movie_id=None, dbid=None, cache_time=14):
 	if not movie_id:
@@ -467,6 +465,7 @@ def extended_movie_info(movie_id=None, dbid=None, cache_time=14):
 		'duration': Utils.fetch(response, 'runtime'),
 		'duration(h)': Utils.format_time(Utils.fetch(response, 'runtime'), 'h'),
 		'duration(m)': Utils.format_time(Utils.fetch(response, 'runtime'), 'm'),
+		'duration(hm)': Utils.format_time(Utils.fetch(response, 'runtime')),
 		'mpaa': mpaa,
 		'Director': ' / '.join(directors),
 		'writer': ' / '.join(authors),
@@ -652,7 +651,6 @@ def extended_season_info(tvshow_id, season_number):
 		'crew': handle_tmdb_people(response['credits']['crew']),
 		'videos': videos,
 		'episodes': handle_tmdb_episodes(response['episodes']),
-		'backdrops': handle_tmdb_images(response['images'].get('backdrops', [])),
 		'images': handle_tmdb_images(response['images']['posters'])
 		}
 	return (season, listitems)
@@ -731,7 +729,7 @@ def translate_status(status_string):
 		'post production': 'Post production',
 		'in production': 'In production',
 		'ended': 'Ended',
-		'returning series': 'Returning series',
+		'returning series': 'Continuing',
 		'planned': 'Planned'
 		}
 	if status_string.lower() in translations:

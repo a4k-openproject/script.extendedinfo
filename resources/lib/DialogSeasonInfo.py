@@ -14,24 +14,40 @@ def get_season_window(window_type):
 	class DialogSeasonInfo(DialogBaseInfo, window_type):
 
 		def __init__(self, *args, **kwargs):
-			super(DialogSeasonInfo, self).__init__(*args, **kwargs)
-			self.type = 'Season'
-			self.tvshow_id = kwargs.get('tvshow_id')
-			data = TheMovieDB.extended_season_info(tvshow_id=self.tvshow_id, season_number=kwargs.get('season'))
-			if not data:
-				return None
-			self.info, self.data = data
-			if 'dbid' not in self.info:
-				self.info['poster'] = Utils.get_file(url=self.info.get('poster', ''))
-			self.info['ImageFilter'], self.info['ImageColor'] = ImageTools.filter_image(input_img=self.info.get('poster', ''), radius=25)
-			self.listitems = [
-				(2000, self.data['episodes']),
-				(1150, self.data['videos']),
-				(1000, self.data['actors']),
-				(750, self.data['crew']),
-				(1250, self.data['images']),
-				(1350, self.data['backdrops'])
-				]
+			if Utils.NETFLIX_VIEW == 'true':
+				super(DialogSeasonInfo, self).__init__(*args, **kwargs)
+				self.type = 'Season'
+				self.tvshow_id = kwargs.get('tvshow_id')
+				data = TheMovieDB.extended_season_info(tvshow_id=self.tvshow_id, season_number=kwargs.get('season'))
+				if not data:
+					return None
+				self.info, self.data = data
+				if 'dbid' not in self.info:
+					self.info['poster'] = Utils.get_file(url=self.info.get('poster', ''))
+				self.listitems = [
+					(2000, self.data['episodes']),
+					(1000, self.data['actors']),
+					(750, self.data['crew']),
+					(1250, self.data['images'])
+					]
+			else:
+				super(DialogSeasonInfo, self).__init__(*args, **kwargs)
+				self.type = 'Season'
+				self.tvshow_id = kwargs.get('tvshow_id')
+				data = TheMovieDB.extended_season_info(tvshow_id=self.tvshow_id, season_number=kwargs.get('season'))
+				if not data:
+					return None
+				self.info, self.data = data
+				if 'dbid' not in self.info:
+					self.info['poster'] = Utils.get_file(url=self.info.get('poster', ''))
+				self.info['ImageFilter'], self.info['ImageColor'] = ImageTools.filter_image(input_img=self.info.get('poster', ''), radius=25)
+				self.listitems = [
+					(2000, self.data['episodes']),
+					(1150, self.data['videos']),
+					(1000, self.data['actors']),
+					(750, self.data['crew']),
+					(1250, self.data['images'])
+					]
 
 		def onInit(self):
 			self.get_youtube_vids('%s %s tv' % (self.info['TVShowTitle'], self.info['title']))
@@ -59,7 +75,7 @@ def get_season_window(window_type):
 			wm.open_episode_info(prev_window=self, tvshow=self.info['TVShowTitle'], tvshow_id=self.tvshow_id, season=self.listitem.getProperty('season'), episode=self.listitem.getProperty('episode'))
 
 		@ch.click(10)
-		def play_season_no_resume(self):
+		def play_season(self):
 			url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/1' % (self.info['tvdb_id'], self.info['season'])
 			PLAYER.play_from_button(url, listitem=None, window=self, dbid=0)
 
@@ -76,7 +92,7 @@ def get_season_window(window_type):
 
 		@ch.click(132)
 		def open_text(self):
-			wm.open_textviewer(header='Overview', text=self.info['Plot'], color=self.info['ImageColor'])
+			wm.open_textviewer(header='Overview', text=self.info['Plot'], color='FFFFFFFF')
 
 		@ch.click(350)
 		@ch.click(1150)

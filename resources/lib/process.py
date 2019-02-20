@@ -6,36 +6,50 @@ from resources.lib import TheMovieDB
 from resources.lib.WindowManager import wm
 from resources.lib.VideoPlayer import PLAYER
 
-ADDON_DATA_PATH = xbmc.translatePath('special://profile/addon_data/script.extendedinfo').decode('utf-8')
-
 def start_info_actions(infos, params):
 	if 'imdbid' in params and 'imdb_id' not in params:
 		params['imdb_id'] = params['imdbid']
 	for info in infos:
 		data = [], ''
 		if info == 'libraryallmovies':
-			return wm.open_video_list(media_type='movie', mode='filter', listitems=local_db.get_db_movies('"sort": {"order": "descending", "method": "dateadded"}'))
+			return local_db.get_db_movies('"sort": {"order": "descending", "method": "dateadded"}')
 
 		elif info == 'libraryalltvshows':
-			return wm.open_video_list(media_type='tv', mode='filter', listitems=local_db.get_db_tvshows('"sort": {"order": "descending", "method": "dateadded"}'))
-
-		elif info == 'comingsoonmovies':
-			return wm.open_video_list(media_type='movie', mode='filter', listitems=TheMovieDB.get_tmdb_movies('upcoming'))
+			return local_db.get_db_tvshows('"sort": {"order": "descending", "method": "dateadded"}')
 
 		elif info == 'popularmovies':
-			return wm.open_video_list(media_type='movie', mode='filter', listitems=TheMovieDB.get_tmdb_movies('popular'))
+			return TheMovieDB.get_tmdb_movies('popular')
 
-		elif info == 'onairtvshows':
-			return wm.open_video_list(media_type='tv', mode='filter', listitems=TheMovieDB.get_tmdb_shows('on_the_air'))
+		elif info == 'topratedmovies':
+			return TheMovieDB.get_tmdb_movies('top_rated')
+
+		elif info == 'incinemamovies':
+			return TheMovieDB.get_tmdb_movies('now_playing')
+
+		elif info == 'upcomingmovies':
+			return TheMovieDB.get_tmdb_movies('upcoming')
 
 		elif info == 'populartvshows':
-			return wm.open_video_list(media_type='tv', mode='filter', listitems=TheMovieDB.get_tmdb_shows('popular'))
+			return TheMovieDB.get_tmdb_shows('popular')
+
+		elif info == 'topratedtvshows':
+			return TheMovieDB.get_tmdb_shows('top_rated')
+
+		elif info == 'onairtvshows':
+			return TheMovieDB.get_tmdb_shows('on_the_air')
+
+		elif info == 'airingtodaytvshows':
+			return TheMovieDB.get_tmdb_shows('airing_today')
 
 		elif info == 'allmovies':
-			return wm.open_video_list(media_type='movie',mode='filter')
+			wm.open_video_list(media_type='movie',mode='filter')
 
 		elif info == 'alltvshows':
-			return wm.open_video_list(media_type='tv',mode='filter')
+			wm.open_video_list(media_type='tv',mode='filter')
+
+		elif info == 'search_menu':
+			search_str = xbmcgui.Dialog().input(heading='Enter search string', type=xbmcgui.INPUT_ALPHANUM)
+			return wm.open_video_list(search_str=search_str, mode='search')
 
 		elif info == 'studio':
 			if 'id' in params and params['id']:
@@ -79,6 +93,24 @@ def start_info_actions(infos, params):
 						del item['credit_id']                    
 					return Utils.merge_dict_lists(movies, key='department')
 
+		elif info == 'afteradd':
+			return Utils.after_add(params.get('type'))
+
+		elif info == 'moviedbbrowser':
+			if xbmcgui.Window(10000).getProperty('infodialogs.active'):
+				return None
+			xbmcgui.Window(10000).setProperty('infodialogs.active', 'true')
+			search_str = params.get('id', '')
+			if not search_str and params.get('search'):
+				result = xbmcgui.Dialog().input(heading='Enter search string', type=xbmcgui.INPUT_ALPHANUM)
+				if result and result > -1:
+					search_str = result
+				else:
+					xbmcgui.Window(10000).clearProperty('infodialogs.active')
+					return None
+			return wm.open_video_list(search_str=search_str, mode='search')
+			xbmcgui.Window(10000).clearProperty('infodialogs.active')
+
 		elif info == 'playmovie':
 			resolve_url(params.get('handle'))
 			Utils.get_kodi_json(method='Player.Open', params='{"item": {"movieid": %s}, "options": {"resume": true}}' % params.get('dbid'))
@@ -101,7 +133,10 @@ def start_info_actions(infos, params):
 
 		elif info == 'openinfodialog':
 			resolve_url(params.get('handle'))
-			container_id = xbmc.getInfoLabel('Container(%s).ListItem.label' % xbmc.getInfoLabel('System.CurrentControlID'))
+			if xbmc.getCondVisibility('System.HasActiveModalDialog | System.HasModalDialog'):
+				container_id = ''
+			else:
+				container_id = xbmc.getInfoLabel('Container(%s).ListItem.label' % xbmc.getInfoLabel('System.CurrentControlID'))
 			dbid = xbmc.getInfoLabel('%sListItem.DBID' % container_id)
 			if not dbid:
 				dbid = xbmc.getInfoLabel('%sListItem.Property(dbid)' % container_id)
@@ -118,42 +153,6 @@ def start_info_actions(infos, params):
 				xbmc.executebuiltin('RunScript(script.extendedinfo,info=extendedactorinfo,name=%s)' % xbmc.getInfoLabel('ListItem.Label'))
 			else:
 				Utils.notify('Error', 'Could not find valid content type')
-
-		elif info == 'afteradd':
-			return Utils.after_add(params.get('type'))
-
-		elif info == 'string':
-			resolve_url(params.get('handle'))
-			xbmcgui.Window(10000).setProperty('infodialogs.active', 'true')
-			dialog = xbmcgui.Dialog()
-			if params.get('type', '') == 'movie':
-				moviesearch = dialog.input('MovieSearch')
-				xbmc.executebuiltin('Skin.SetString(MovieSearch,' + moviesearch + ')')
-				xbmc.executebuiltin('Container.Refresh')
-			elif params.get('type', '') == 'tv':
-				showsearch = dialog.input('ShowSearch')
-				xbmc.executebuiltin('Skin.SetString(ShowSearch,' + showsearch + ')')
-				xbmc.executebuiltin('Container.Refresh')
-			elif params.get('type', '') == 'youtube':
-				youtubesearch = dialog.input('YoutubeSearch')
-				xbmc.executebuiltin('Skin.SetString(YoutubeSearch,' + youtubesearch + ')')
-				xbmc.executebuiltin('Container.Refresh')
-			xbmcgui.Window(10000).clearProperty('infodialogs.active')
-
-		elif info == 'moviedbbrowser':
-			if xbmcgui.Window(10000).getProperty('infodialogs.active'):
-				return None
-			xbmcgui.Window(10000).setProperty('infodialogs.active', 'true')
-			search_str = params.get('id', '')
-			if not search_str and params.get('search'):
-				result = xbmcgui.Dialog().input(heading='Enter search string', type=xbmcgui.INPUT_ALPHANUM)
-				if result and result > -1:
-					search_str = result
-				else:
-					xbmcgui.Window(10000).clearProperty('infodialogs.active')
-					return None
-			wm.open_video_list(search_str=search_str, mode='search')
-			xbmcgui.Window(10000).clearProperty('infodialogs.active')
 
 		elif info == 'extendedinfo':
 			resolve_url(params.get('handle'))
@@ -213,7 +212,6 @@ def start_info_actions(infos, params):
 			resolve_url(params.get('handle'))
 			for builtin in params.get('id', '').split('$$'):
 				xbmc.executebuiltin(builtin)
-			return None
 
 		elif info == 'youtubevideo':
 			resolve_url(params.get('handle'))
@@ -246,11 +244,30 @@ def start_info_actions(infos, params):
 			if tvshow_id:
 				TheMovieDB.play_tv_trailer_fullscreen(tvshow_id)
 
+		elif info == 'string':
+			resolve_url(params.get('handle'))
+			xbmcgui.Window(10000).setProperty('infodialogs.active', 'true')
+			dialog = xbmcgui.Dialog()
+			if params.get('type', '') == 'movie':
+				moviesearch = dialog.input('MovieSearch')
+				xbmc.executebuiltin('Skin.SetString(MovieSearch,%s)' % moviesearch)
+				xbmc.executebuiltin('Container.Refresh')
+			elif params.get('type', '') == 'tv':
+				showsearch = dialog.input('ShowSearch')
+				xbmc.executebuiltin('Skin.SetString(ShowSearch,%s)' % showsearch)
+				xbmc.executebuiltin('Container.Refresh')
+			elif params.get('type', '') == 'youtube':
+				youtubesearch = dialog.input('YoutubeSearch')
+				xbmc.executebuiltin('Skin.SetString(YoutubeSearch,%s)' % youtubesearch)
+				xbmc.executebuiltin('Container.Refresh')
+			xbmcgui.Window(10000).clearProperty('infodialogs.active')
+
 		elif info == 'deletecache':
 			resolve_url(params.get('handle'))
-			xbmcgui.Window(10000).clearProperties()
-			for rel_path in os.listdir(ADDON_DATA_PATH):
-				path = os.path.join(ADDON_DATA_PATH, rel_path)
+			xbmcgui.Window(10000).clearProperty('infodialogs.active')
+			xbmcgui.Window(10000).clearProperty('extendedinfo_running')
+			for rel_path in os.listdir(Utils.ADDON_DATA_PATH):
+				path = os.path.join(Utils.ADDON_DATA_PATH, rel_path)
 				try:
 					if os.path.isdir(path):
 						shutil.rmtree(path)
@@ -258,17 +275,6 @@ def start_info_actions(infos, params):
 					Utils.log(e)
 			Utils.notify('Cache deleted')
 
-		listitems, prefix = data
-		if params.get('handle'):
-			xbmcplugin.addSortMethod(params.get('handle'), xbmcplugin.SORT_METHOD_TITLE)
-			xbmcplugin.addSortMethod(params.get('handle'), xbmcplugin.SORT_METHOD_VIDEO_YEAR)
-			xbmcplugin.addSortMethod(params.get('handle'), xbmcplugin.SORT_METHOD_DURATION)
-			if info.endswith('shows'):
-				xbmcplugin.setContent(params.get('handle'), 'tvshows')
-			else:
-				xbmcplugin.setContent(params.get('handle'), 'movies')
-		Utils.pass_list_to_skin(name=prefix, data=listitems, prefix=params.get('prefix', ''), handle=params.get('handle', ''), limit=params.get('limit', 20))
-
 def resolve_url(handle):
 	if handle:
-		xbmcplugin.setResolvedUrl(int(handle), False, xbmcgui.ListItem())
+		xbmcplugin.setResolvedUrl(handle=int(handle), succeeded=False, listitem=xbmcgui.ListItem())

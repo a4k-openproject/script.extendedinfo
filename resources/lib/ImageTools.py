@@ -3,17 +3,15 @@ from PIL import Image, ImageFilter
 import xbmc, xbmcvfs
 from resources.lib import Utils
 
-IMAGES_DATA_PATH = xbmc.translatePath('special://profile/addon_data/script.extendedinfo/images').decode('utf-8')
-
 def filter_image(input_img, radius=25):
-	if not xbmcvfs.exists(os.path.join(IMAGES_DATA_PATH)):
-		xbmcvfs.mkdir(os.path.join(IMAGES_DATA_PATH))
+	if not xbmcvfs.exists(os.path.join(Utils.IMAGES_DATA_PATH)):
+		xbmcvfs.mkdir(os.path.join(Utils.IMAGES_DATA_PATH))
 	input_img = xbmc.translatePath(urllib.unquote(input_img.encode('utf-8'))).replace('image://', '')
 	if input_img.endswith('/'):
 		input_img = input_img[:-1]
 	cachedthumb = xbmc.getCacheThumbName(input_img)
 	filename = '%s-radius_%i.png' % (cachedthumb, radius)
-	targetfile = os.path.join(IMAGES_DATA_PATH, filename)
+	targetfile = os.path.join(Utils.IMAGES_DATA_PATH, filename)
 	xbmc_vid_cache_file = os.path.join('special://profile/Thumbnails/Video', cachedthumb[0], cachedthumb)
 	xbmc_cache_file = os.path.join('special://profile/Thumbnails', cachedthumb[0], cachedthumb[:-4] + '.jpg')
 	if input_img == '':

@@ -2,7 +2,14 @@ import os, re, time, json, urllib, hashlib, datetime, requests, threading
 import xbmc, xbmcgui, xbmcvfs, xbmcaddon, xbmcplugin
 from functools import wraps
 
+ADDON_PATH = xbmc.translatePath('special://home/addons/script.extendedinfo').decode('utf-8')
 ADDON_DATA_PATH = xbmc.translatePath('special://profile/addon_data/script.extendedinfo').decode('utf-8')
+IMAGES_DATA_PATH = xbmc.translatePath('special://profile/addon_data/script.extendedinfo/images').decode('utf-8')
+SKIN_DIR = xbmc.getSkinDir()
+AUTOPLAY_TRAILER = xbmcaddon.Addon().getSetting('autoplay_trailer')
+NETFLIX_VIEW = xbmcaddon.Addon().getSetting('netflix_view')
+OPENMETA_TV_FOLDER = xbmcaddon.Addon('plugin.video.openmeta').getSetting('tv_library_folder')
+OPENMETA_MOVIE_FOLDER = xbmcaddon.Addon('plugin.video.openmeta').getSetting('movies_library_folder')
 
 def show_busy():
 	if int(xbmc.getInfoLabel('System.BuildVersion')[:2]) > 17:
@@ -73,9 +80,9 @@ def format_time(time, format=None):
 	elif format == 'm':
 		return minute
 	elif intTime >= 60:
-		return hour + ' h ' + minute + ' min'
+		return '%sh %sm' % (hour, minute)
 	else:
-		return minute + ' min'
+		return 's%m' % minute
 
 def url_quote(input_string):
 	try:
@@ -258,9 +265,9 @@ def get_file(url):
 		if r.status_code != 200:
 			return ''
 		data = r.content
-		log('image downloaded: ' + clean_url)
+		log('image downloaded: %s' % clean_url)
 	except Exception as e:
-		log('image download failed: ' + clean_url)
+		log('image download failed: %s' % clean_url)
 		return ''
 	if not data:
 		return ''
@@ -276,12 +283,11 @@ def get_file(url):
 def log(txt):
 	if isinstance(txt, str):
 		txt = txt.decode('utf-8', 'ignore')
-	message = u'script.extendedinfo: %s' % txt
+	message = u'script.extendedinfo:  ' + txt
 	xbmc.log(msg=message.encode('utf-8', 'ignore'), level=xbmc.LOGDEBUG)
 
 def get_browse_dialog(default='', heading='Browse', dlg_type=3, shares='files', mask='', use_thumbs=False, treat_as_folder=False):
-	dialog = xbmcgui.Dialog()
-	value = dialog.browse(dlg_type, heading, shares, mask, use_thumbs, treat_as_folder, default)
+	value = xbmcgui.Dialog().browse(dlg_type, heading, shares, mask, use_thumbs, treat_as_folder, default)
 	return value
 
 def save_to_file(content, filename, path=''):
@@ -305,14 +311,14 @@ def read_from_file(path='', raw=False):
 		return False
 	try:
 		with open(path) as f:
-			log('opened textfile %s.' % path)
+			log('opened textfile  %s' % path)
 			if not raw:
 				result = json.load(f)
 			else:
 				result = f.read()
 		return result
 	except:
-		log('failed to load textfile: ' + path)
+		log('failed to load textfile: %s' % path)
 		return False
 
 def notify(header='', message='', icon=xbmcaddon.Addon().getAddonInfo('icon'), time=5000, sound=True):
@@ -324,7 +330,6 @@ def get_kodi_json(method, params):
 	return json.loads(json_query)
 
 def pass_dict_to_skin(data=None, prefix='', debug=False, precache=False, window_id=10000):
-	window = xbmcgui.Window(window_id)
 	if not data:
 		return None
 	threads = []
@@ -340,7 +345,7 @@ def pass_dict_to_skin(data=None, prefix='', debug=False, precache=False, window_
 					threads += [thread]
 					thread.start()
 					image_requests.append(value)
-		window.setProperty('%s%s' % (prefix, str(key)), value)
+		xbmcgui.Window(window_id).setProperty('%s%s' % (prefix, str(key)), value)
 		if debug:
 			log('%s%s' % (prefix, str(key)) + value)
 	for x in threads:
@@ -356,7 +361,7 @@ def merge_dict_lists(items, key='job'):
 		else:
 			index = crew_id_list.index(item['id'])
 			if key in crew_list[index]:
-				crew_list[index][key] = crew_list[index][key] + ' / ' + item[key]
+				crew_list[index][key] = '%s / %s' % (crew_list[index][key], item[key])
 	return crew_list
 
 def pass_list_to_skin(name='', data=[], prefix='', handle=None, limit=False):
@@ -391,7 +396,7 @@ def set_window_props(name, data, prefix='', debug=False):
 	xbmcgui.Window(10000).setProperty('%s%s.Count' % (prefix, name), str(len(data)))
 
 def create_listitems(data=None, preload_images=0):
-	INT_INFOLABELS = ['year', 'episode', 'season', 'top250', 'tracknumber', 'playcount', 'overlay']
+	INT_INFOLABELS = ['year', 'episode', 'season', 'tracknumber', 'playcount', 'overlay']
 	FLOAT_INFOLABELS = ['rating']
 	STRING_INFOLABELS = ['genre', 'director', 'mpaa', 'plot', 'plotoutline', 'title', 'originaltitle', 'sorttitle', 'duration', 'studio', 'tagline', 'writer', 'tvshowtitle', 'premiered', 'status', 'code', 'aired', 'credits', 'lastplayed', 'album', 'votes', 'trailer', 'dateadded']
 	if not data:
