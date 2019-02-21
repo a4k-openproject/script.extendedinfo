@@ -53,8 +53,8 @@ def handle_tmdb_movies(results=[], local_first=True, sortkey='year'):
 			genres = ''
 		tmdb_id = str(Utils.fetch(movie, 'id'))
 		artwork = get_image_urls(poster=movie.get('poster_path'), fanart=movie.get('backdrop_path'))
-		trailer = 'plugin://script.extendedinfo?info=playtrailer&&id=%s' % tmdb_id
-		path = 'plugin://script.extendedinfo?info=extendedinfo&&id=%s' % tmdb_id
+		trailer = 'plugin://script.extendedinfo?info=playtrailer&&id=' + tmdb_id
+		path = 'plugin://script.extendedinfo?info=extendedinfo&&id=' + tmdb_id
 		listitem = {
 			'title': Utils.fetch(movie, 'title'),
 			'Label': Utils.fetch(movie, 'title'),
@@ -239,7 +239,7 @@ def handle_tmdb_people(results):
 			'id': str(person['id']),
 			'cast_id': str(Utils.fetch(person, 'cast_id')),
 			'credit_id': str(Utils.fetch(person, 'credit_id')),
-			'path': 'plugin://script.extendedinfo?info=extendedactorinfo&&id=%s' % str(person['id']),
+			'path': 'plugin://script.extendedinfo?info=extendedactorinfo&&id=' + str(person['id']),
 			'deathday': Utils.fetch(person, 'deathday'),
 			'place_of_birth': Utils.fetch(person, 'place_of_birth'),
 			'placeofbirth': Utils.fetch(person, 'place_of_birth'),
@@ -271,7 +271,7 @@ def handle_tmdb_tagged_images(results):
 			'vote_average': Utils.fetch(item, 'vote_average'),
 			'iso_639_1': Utils.fetch(item, 'iso_639_1'),
 			'title': Utils.fetch(item['media'], 'title'),
-			'mediaposter': 'https://image.tmdb.org/t/p/w500%s' % Utils.fetch(item['media'], 'poster_path')
+			'mediaposter': 'https://image.tmdb.org/t/p/w500' + Utils.fetch(item['media'], 'poster_path')
 			}
 		image.update(artwork)
 		images.append(image)
@@ -337,32 +337,32 @@ def get_credit_info(credit_id):
 def get_image_urls(poster=None, still=None, fanart=None, profile=None):
 	images = {}
 	if poster:
-		images['poster'] = 'https://image.tmdb.org/t/p/w500%s' % poster
-		images['poster_original'] = 'https://image.tmdb.org/t/p/original%s' % poster
-		images['original'] = 'https://image.tmdb.org/t/p/original%s' % poster
-		images['poster_small'] = 'https://image.tmdb.org/t/p/w342%s' % poster
-		images['thumb'] = 'https://image.tmdb.org/t/p/w342%s' % poster
+		images['poster'] = 'https://image.tmdb.org/t/p/w500' + poster
+		images['poster_original'] = 'https://image.tmdb.org/t/p/original' + poster
+		images['original'] = 'https://image.tmdb.org/t/p/original' + poster
+		images['poster_small'] = 'https://image.tmdb.org/t/p/w342' + poster
+		images['thumb'] = 'https://image.tmdb.org/t/p/w342' + poster
 	if still:
-		images['thumb'] = 'https://image.tmdb.org/t/p/w300%s' % still
-		images['still'] = 'https://image.tmdb.org/t/p/w300%s' % still
-		images['still_original'] = 'https://image.tmdb.org/t/p/original%s' % still
-		images['still_small'] = 'https://image.tmdb.org/t/p/w185%s' % still
+		images['thumb'] = 'https://image.tmdb.org/t/p/w300' + still
+		images['still'] = 'https://image.tmdb.org/t/p/w300' + still
+		images['still_original'] = 'https://image.tmdb.org/t/p/original' + still
+		images['still_small'] = 'https://image.tmdb.org/t/p/w185' + still
 	if fanart:
-		images['fanart'] = 'https://image.tmdb.org/t/p/w1280%s' % fanart
-		images['fanart_original'] = 'https://image.tmdb.org/t/p/original%s' % fanart
-		images['original'] = 'https://image.tmdb.org/t/p/original%s' % fanart
-		images['fanart_small'] = 'https://image.tmdb.org/t/p/w780%s' % fanart
+		images['fanart'] = 'https://image.tmdb.org/t/p/w1280' + fanart
+		images['fanart_original'] = 'https://image.tmdb.org/t/p/original' + fanart
+		images['original'] = 'https://image.tmdb.org/t/p/original' + fanart
+		images['fanart_small'] = 'https://image.tmdb.org/t/p/w780' + fanart
 	if profile:
-		images['poster'] = 'https://image.tmdb.org/t/p/w500%s' % profile
-		images['poster_original'] = 'https://image.tmdb.org/t/p/original%s' % profile
-		images['poster_small'] = 'https://image.tmdb.org/t/p/w342%s' % profile
-		images['thumb'] = 'https://image.tmdb.org/t/p/w342%s' % profile
+		images['poster'] = 'https://image.tmdb.org/t/p/w500' + profile
+		images['poster_original'] = 'https://image.tmdb.org/t/p/original' + profile
+		images['poster_small'] = 'https://image.tmdb.org/t/p/w342' + profile
+		images['thumb'] = 'https://image.tmdb.org/t/p/w342' + profile
 	return images
 
 def get_movie_tmdb_id(imdb_id=None, name=None, dbid=None):
 	if dbid and (int(dbid) > 0):
 		movie_id = local_db.get_imdb_id_from_db('movie', dbid)
-		Utils.log('IMDB Id from local DB: %s' % movie_id)
+		Utils.log('IMDB Id from local DB: ' + movie_id)
 		response = get_tmdb_data('find/%s?external_source=imdb_id&language=%s&' % (movie_id, xbmcaddon.Addon().getSetting('LanguageID')), 30)
 		if response['movie_results']:
 			return response['movie_results'][0]['id']
@@ -392,7 +392,7 @@ def get_show_tmdb_id(tvdb_id=None, db=None, imdb_id=None):
 		id = tvdb_id
 		db = 'tvdb_id'
 	elif imdb_id:
-		id = 'tt%s' % imdb_id
+		id = 'tt' + imdb_id
 		db = 'imdb_id'
 	response = get_tmdb_data('find/%s?external_source=%s&language=%s&' % (id, db, xbmcaddon.Addon().getSetting('LanguageID')), 30)
 	if response:

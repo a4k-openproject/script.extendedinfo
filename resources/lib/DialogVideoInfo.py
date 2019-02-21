@@ -162,7 +162,7 @@ def get_movie_window(window_type):
 
 		@ch.click(8)
 		def play_movie(self):
-			if self.dbid:
+			if self.dbid and self.dbid != "-1":
 				dbid = self.dbid
 				url = ''
 			else:
@@ -183,6 +183,8 @@ def get_movie_window(window_type):
 
 		@ch.click(18)
 		def add_movie_to_library(self):
+			if not xbmc.getCondVisibility('System.HasAddon(plugin.video.openmeta)'):
+				xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/setup/total)')
 			if xbmcgui.Dialog().yesno('OpenInfo', 'Add [B]%s[/B] to library?' % self.info['title']):
 				xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/movies/add_to_library/tmdb/%s)' % self.info.get('id', ''))
 				Utils.after_add(type='movie')
@@ -190,6 +192,8 @@ def get_movie_window(window_type):
 
 		@ch.click(19)
 		def remove_movie_from_library(self):
+			if not xbmc.getCondVisibility('System.HasAddon(plugin.video.openmeta)'):
+				xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/setup/total)')
 			if xbmcgui.Dialog().yesno('OpenInfo', 'Remove [B]%s[/B] from library?' % self.info['title']):
 				if os.path.exists(xbmc.translatePath('%s%s/' % (Utils.OPENMETA_MOVIE_FOLDER, self.info['imdb_id']))):
 					Utils.get_kodi_json(method='VideoLibrary.RemoveMovie', params='{"movieid": %d}' % int(self.info['dbid']))

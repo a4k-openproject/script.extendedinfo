@@ -8,8 +8,8 @@ IMAGES_DATA_PATH = xbmc.translatePath('special://profile/addon_data/script.exten
 SKIN_DIR = xbmc.getSkinDir()
 AUTOPLAY_TRAILER = xbmcaddon.Addon().getSetting('autoplay_trailer')
 NETFLIX_VIEW = xbmcaddon.Addon().getSetting('netflix_view')
-OPENMETA_TV_FOLDER = xbmcaddon.Addon('plugin.video.openmeta').getSetting('tv_library_folder')
-OPENMETA_MOVIE_FOLDER = xbmcaddon.Addon('plugin.video.openmeta').getSetting('movies_library_folder')
+OPENMETA_TV_FOLDER = xbmcaddon.Addon('plugin.video.openmeta').getSetting('tv_library_folder') if xbmc.getCondVisibility('System.HasAddon(plugin.video.openmeta)') else None
+OPENMETA_MOVIE_FOLDER = xbmcaddon.Addon('plugin.video.openmeta').getSetting('movies_library_folder') if xbmc.getCondVisibility('System.HasAddon(plugin.video.openmeta)') else None
 
 def show_busy():
 	if int(xbmc.getInfoLabel('System.BuildVersion')[:2]) > 17:
@@ -80,9 +80,9 @@ def format_time(time, format=None):
 	elif format == 'm':
 		return minute
 	elif intTime >= 60:
-		return '%sh %sm' % (hour, minute)
+		return hour + 'h ' + minute + 'm'
 	else:
-		return 's%m' % minute
+		return minute + 'm'
 
 def url_quote(input_string):
 	try:
@@ -197,7 +197,7 @@ def get_http(url, headers=False):
 			request = requests.get(url, headers=headers)
 			return request.text
 		except Exception as e:
-			log('get_http: could not get data from %s' % url)
+			log('get_http: could not get data from ' + url)
 			xbmc.sleep(500)
 			succeed += 1
 	return None
@@ -265,9 +265,9 @@ def get_file(url):
 		if r.status_code != 200:
 			return ''
 		data = r.content
-		log('image downloaded: %s' % clean_url)
+		log('image downloaded: ' + clean_url)
 	except Exception as e:
-		log('image download failed: %s' % clean_url)
+		log('image download failed: ' + clean_url)
 		return ''
 	if not data:
 		return ''
@@ -311,14 +311,14 @@ def read_from_file(path='', raw=False):
 		return False
 	try:
 		with open(path) as f:
-			log('opened textfile  %s' % path)
+			log('opened textfile  ' + path)
 			if not raw:
 				result = json.load(f)
 			else:
 				result = f.read()
 		return result
 	except:
-		log('failed to load textfile: %s' % path)
+		log('failed to load textfile: ' + path)
 		return False
 
 def notify(header='', message='', icon=xbmcaddon.Addon().getAddonInfo('icon'), time=5000, sound=True):
@@ -361,11 +361,11 @@ def merge_dict_lists(items, key='job'):
 		else:
 			index = crew_id_list.index(item['id'])
 			if key in crew_list[index]:
-				crew_list[index][key] = '%s / %s' % (crew_list[index][key], item[key])
+				crew_list[index][key] = crew_list[index][key] + ' / ' + item[key]
 	return crew_list
 
 def pass_list_to_skin(name='', data=[], prefix='', handle=None, limit=False):
-	if data and limit and int(limit) < len(data):
+	if data and limit and int(limit) < len(data) and limit not in ("0", 0):
 		data = data[:int(limit)]
 	if not handle:
 		set_window_props(name, data, prefix)

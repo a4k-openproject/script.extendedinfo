@@ -12,10 +12,10 @@ def start_info_actions(infos, params):
 	for info in infos:
 		data = [], ''
 		if info == 'libraryallmovies':
-			return local_db.get_db_movies('"sort": {"order": "descending", "method": "dateadded"}')
+			return local_db.get_db_movies('"sort": {"order": "descending", "method": "dateadded", "limit": %s}' % params.get("limit", "0"))
 
 		elif info == 'libraryalltvshows':
-			return local_db.get_db_tvshows('"sort": {"order": "descending", "method": "dateadded"}')
+			return local_db.get_db_tvshows('"sort": {"order": "descending", "method": "dateadded", "limit": %s}' % params.get("limit", "0"))
 
 		elif info == 'popularmovies':
 			return TheMovieDB.get_tmdb_movies('popular')
@@ -108,8 +108,8 @@ def start_info_actions(infos, params):
 				else:
 					xbmcgui.Window(10000).clearProperty('infodialogs.active')
 					return None
-			return wm.open_video_list(search_str=search_str, mode='search')
 			xbmcgui.Window(10000).clearProperty('infodialogs.active')
+			return wm.open_video_list(search_str=search_str, mode='search')
 
 		elif info == 'playmovie':
 			resolve_url(params.get('handle'))

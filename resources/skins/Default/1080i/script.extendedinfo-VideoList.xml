@@ -32,6 +32,7 @@
 					<animation effect="fade" time="200">Hidden</animation>
 					<texture colordiffuse="$INFO[Window(home).Property(ImageColor)]" border="40">common/roundedbutton-focus.png</texture>
 					<animation effect="slide" end="0,420" time="300" tween="cubic" easing="inout" condition="Container(500).Row(1)">Conditional</animation>
+					<animation effect="slide" end="0,840" time="300" tween="cubic" easing="inout" condition="Container(500).Row(2)">Conditional</animation>
 					<animation effect="slide" end="350,0" time="300" tween="cubic" easing="inout" condition="Container(500).Column(4)">Conditional</animation>
 					<animation effect="slide" end="350,0" time="300" tween="cubic" easing="inout" condition="Container(500).Column(4) | Container(500).Column(3)">Conditional</animation>
 					<animation effect="slide" end="350,0" time="300" tween="cubic" easing="inout" condition="Container(500).Column(4) | Container(500).Column(3) | Container(500).Column(2)">Conditional</animation>

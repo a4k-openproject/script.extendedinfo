@@ -161,6 +161,8 @@ def get_tvshow_window(window_type):
 
 		@ch.click(20)
 		def add_tvshow_to_library(self):
+			if not xbmc.getCondVisibility('System.HasAddon(plugin.video.openmeta)'):
+				xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/setup/total)')
 			if xbmcgui.Dialog().yesno('OpenInfo', 'Add [B]%s[/B] to library?' % self.info['TVShowTitle']):
 				xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/tv/add_to_library/%s)' % self.info['tvdb_id'])
 				Utils.after_add(type='tv')
@@ -168,6 +170,8 @@ def get_tvshow_window(window_type):
 
 		@ch.click(21)
 		def remove_tvshow_from_library(self):
+			if not xbmc.getCondVisibility('System.HasAddon(plugin.video.openmeta)'):
+				xbmc.executebuiltin('RunPlugin(plugin://plugin.video.openmeta/setup/total)')
 			if xbmcgui.Dialog().yesno('OpenInfo', 'Remove [B]%s[/B] from library?' % self.info['TVShowTitle']):
 				if os.path.exists(xbmc.translatePath('%s%s/' % (Utils.OPENMETA_TV_FOLDER, self.info['tvdb_id']))):
 					Utils.get_kodi_json(method='VideoLibrary.RemoveTVShow', params='{"tvshowid": %s}' % int(self.info['dbid']))
