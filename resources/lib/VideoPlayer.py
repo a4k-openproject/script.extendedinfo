@@ -53,7 +53,7 @@ class VideoPlayer(xbmc.Player):
 			xbmc.sleep(1000)
 
 	def playtube(self, youtube_id=False, listitem=None, window=False):
-		url = 'plugin://plugin.video.youtube/play/?video_id=' + youtube_id
+		url = 'plugin://plugin.video.youtube/play/?video_id=%s' % youtube_id
 		self.play(url=url, listitem=listitem, window=window)
 
 PLAYER = VideoPlayer()

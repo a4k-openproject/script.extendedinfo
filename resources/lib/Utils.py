@@ -197,7 +197,7 @@ def get_http(url, headers=False):
 			request = requests.get(url, headers=headers)
 			return request.text
 		except Exception as e:
-			log('get_http: could not get data from ' + url)
+			log('get_http: could not get data from %s' % url)
 			xbmc.sleep(500)
 			succeed += 1
 	return None
@@ -209,8 +209,8 @@ def get_JSON_response(url='', cache_days=7.0, folder=False, headers=False):
 	cache_seconds = int(cache_days * 86400.0)
 	if not cache_days:
 		xbmcgui.Window(10000).clearProperty(hashed_url)
-		xbmcgui.Window(10000).clearProperty(hashed_url + '_timestamp')
-	prop_time = xbmcgui.Window(10000).getProperty(hashed_url + '_timestamp')
+		xbmcgui.Window(10000).clearProperty('%s_timestamp' % hashed_url)
+	prop_time = xbmcgui.Window(10000).getProperty('%s_timestamp' % hashed_url)
 	if prop_time and now - float(prop_time) < cache_seconds:
 		try:
 			prop = json.loads(xbmcgui.Window(10000).getProperty(hashed_url))
@@ -218,7 +218,7 @@ def get_JSON_response(url='', cache_days=7.0, folder=False, headers=False):
 				return prop
 		except Exception as e:
 			pass
-	path = os.path.join(cache_path, hashed_url + '.txt')
+	path = os.path.join(cache_path, '%s.txt' % hashed_url)
 	if xbmcvfs.exists(path) and ((now - os.path.getmtime(path)) < cache_seconds):
 		results = read_from_file(path)
 	else:
@@ -232,7 +232,7 @@ def get_JSON_response(url='', cache_days=7.0, folder=False, headers=False):
 			results = read_from_file(path) if xbmcvfs.exists(path) else []
 	if not results:
 		return None
-	xbmcgui.Window(10000).setProperty(hashed_url + '_timestamp', str(now))
+	xbmcgui.Window(10000).setProperty('%s_timestamp' % hashed_url, str(now))
 	xbmcgui.Window(10000).setProperty(hashed_url, json.dumps(results))
 	return results
 
@@ -252,22 +252,22 @@ def get_file(url):
 	cache_file_jpg = os.path.join('special://profile/Thumbnails/', cached_thumb[0], cached_thumb[:-4] + '.jpg').replace('\\', '/')
 	cache_file_png = cache_file_jpg[:-4] + '.png'
 	if xbmcvfs.exists(cache_file_jpg):
-		log('cache_file_jpg Image: ' + url + '-->' + cache_file_jpg)
+		log('cache_file_jpg Image: %s --> %s' % (url, cache_file_jpg))
 		return translate_path(cache_file_jpg)
 	elif xbmcvfs.exists(cache_file_png):
-		log('cache_file_png Image: ' + url + '-->' + cache_file_png)
+		log('cache_file_png Image: %s --> %s' % (url, cache_file_png))
 		return cache_file_png
 	elif xbmcvfs.exists(vid_cache_file):
-		log('vid_cache_file Image: ' + url + '-->' + vid_cache_file)
+		log('vid_cache_file Image: %s --> %s' % (url, vid_cache_file))
 		return vid_cache_file
 	try:
 		r = requests.get(clean_url, stream=True)
 		if r.status_code != 200:
 			return ''
 		data = r.content
-		log('image downloaded: ' + clean_url)
+		log('image downloaded: %s' % clean_url)
 	except Exception as e:
-		log('image download failed: ' + clean_url)
+		log('image download failed: %s' % clean_url)
 		return ''
 	if not data:
 		return ''
@@ -277,13 +277,13 @@ def get_file(url):
 			f.write(data)
 		return translate_path(image)
 	except Exception as e:
-		log('failed to save image ' + url)
+		log('failed to save image %s' % url)
 		return ''
 
 def log(txt):
 	if isinstance(txt, str):
 		txt = txt.decode('utf-8', 'ignore')
-	message = u'script.extendedinfo:  ' + txt
+	message = u'script.extendedinfo:  %s' % txt
 	xbmc.log(msg=message.encode('utf-8', 'ignore'), level=xbmc.LOGDEBUG)
 
 def get_browse_dialog(default='', heading='Browse', dlg_type=3, shares='files', mask='', use_thumbs=False, treat_as_folder=False):
@@ -292,11 +292,11 @@ def get_browse_dialog(default='', heading='Browse', dlg_type=3, shares='files', 
 
 def save_to_file(content, filename, path=''):
 	if path == '':
-		text_file_path = get_browse_dialog() + filename + '.txt'
+		text_file_path = '%s%s.txt' % (get_browse_dialog(), filename)
 	else:
 		if not xbmcvfs.exists(path):
 			xbmcvfs.mkdirs(path)
-		text_file_path = os.path.join(path, filename + '.txt')
+		text_file_path = os.path.join(path, '%s.txt' % filename)
 	now = time.time()
 	text_file = xbmcvfs.File(text_file_path, 'w')
 	json.dump(content, text_file)
@@ -311,14 +311,14 @@ def read_from_file(path='', raw=False):
 		return False
 	try:
 		with open(path) as f:
-			log('opened textfile  ' + path)
+			log('opened textfile  %s' % path)
 			if not raw:
 				result = json.load(f)
 			else:
 				result = f.read()
 		return result
 	except:
-		log('failed to load textfile: ' + path)
+		log('failed to load textfile: %s' % path)
 		return False
 
 def notify(header='', message='', icon=xbmcaddon.Addon().getAddonInfo('icon'), time=5000, sound=True):
@@ -361,7 +361,7 @@ def merge_dict_lists(items, key='job'):
 		else:
 			index = crew_id_list.index(item['id'])
 			if key in crew_list[index]:
-				crew_list[index][key] = crew_list[index][key] + ' / ' + item[key]
+				crew_list[index][key] = '%s / %s' % (crew_list[index][key], item[key])
 	return crew_list
 
 def pass_list_to_skin(name='', data=[], prefix='', handle=None, limit=False):
@@ -372,7 +372,7 @@ def pass_list_to_skin(name='', data=[], prefix='', handle=None, limit=False):
 		return None
 	xbmcgui.Window(10000).clearProperty(name)
 	if data:
-		xbmcgui.Window(10000).setProperty(name + '.Count', str(len(data)))
+		xbmcgui.Window(10000).setProperty('%s.Count' % name, str(len(data)))
 		items = create_listitems(data)
 		itemlist = [(item.getProperty('path'), item, bool(item.getProperty('directory'))) for item in items]
 		xbmcplugin.addDirectoryItems(handle=handle, items=itemlist, totalItems=len(itemlist))
