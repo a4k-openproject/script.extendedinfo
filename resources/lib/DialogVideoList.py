@@ -23,6 +23,33 @@ SORTS = {
 		'vote_count': 'Vote count',
 		'first_air_date': 'First aired'
 		}}
+LANGUAGES = [
+	{'id': 'bg', 'name': 'Bulgarian'},
+	{'id': 'cs', 'name': 'Czech'},
+	{'id': 'da', 'name': 'Danish'},
+	{'id': 'de', 'name': 'German'},
+	{'id': 'el', 'name': 'Greek'},
+	{'id': 'en', 'name': 'English'},
+	{'id': 'es', 'name': 'Spanish'},
+	{'id': 'fi', 'name': 'Finnish'},
+	{'id': 'fr', 'name': 'French'},
+	{'id': 'he', 'name': 'Hebrew'},
+	{'id': 'hi', 'name': 'Hindi'},
+	{'id': 'hr', 'name': 'Croatian'},
+	{'id': 'hu', 'name': 'Hungarian'},
+	{'id': 'it', 'name': 'Italian'},
+	{'id': 'ja', 'name': 'Japanese'},
+	{'id': 'ko', 'name': 'Korean'},
+	{'id': 'nl', 'name': 'Dutch'},
+	{'id': 'no', 'name': 'Norwegian'},
+	{'id': 'pl', 'name': 'Polish'},
+	{'id': 'pt', 'name': 'Portuguese'},
+	{'id': 'ru', 'name': 'Russian'},
+	{'id': 'sl', 'name': 'Slovenian'},
+	{'id': 'sv', 'name': 'Swedish'},
+	{'id': 'tr', 'name': 'Turkish'},
+	{'id': 'zh', 'name': 'Chinese'}
+]
 
 def get_tmdb_window(window_type):
 
@@ -165,7 +192,7 @@ def get_tmdb_window(window_type):
 			if index == -1:
 				return None
 			if sort_strings[index] == 'vote_average':
-				self.add_filter(key='vote_count.gte', value='10', typelabel='%s (%s)' % ('Vote count', 'greater than'), label='10')
+				self.add_filter('vote_count.gte', '10', '%s (%s)' % ('Vote count', 'greater than'), '10')
 			self.sort = sort_strings[index]
 			self.sort_label = listitems[index]
 			self.update()
@@ -210,9 +237,9 @@ def get_tmdb_window(window_type):
 			result = xbmcgui.Dialog().input(heading='Vote count', type=xbmcgui.INPUT_NUMERIC)
 			if result:
 				if ret:
-					self.add_filter('vote_count.lte', result, 'Vote count', ' < ' + result)
+					self.add_filter('vote_count.lte', result, 'Vote count', ' < %s' % result)
 				else:
-					self.add_filter('vote_count.gte', result, 'Vote count', ' > ' + result)
+					self.add_filter('vote_count.gte', result, 'Vote count', ' > %s' % result)
 				self.mode = 'filter'
 				self.page = 1
 				self.update()
@@ -232,9 +259,9 @@ def get_tmdb_window(window_type):
 				value = '%s-01-01' % result
 				label = ' > ' + result
 			if self.type == 'tv':
-				self.add_filter('first_air_date.' + order, value, 'First aired', label)
+				self.add_filter('first_air_date.%s' % order, value, 'First aired', label)
 			else:
-				self.add_filter('primary_release_date.' + order, value, 'Year', label)
+				self.add_filter('primary_release_date.%s' % order, value, 'Year', label)
 			self.mode = 'filter'
 			self.page = 1
 			self.update()
@@ -279,7 +306,7 @@ def get_tmdb_window(window_type):
 				response = response[0]
 			else:
 				Utils.notify('No company found')
-			self.add_filter(key='with_companies', value=str(response['id']), typelabel='Studios', label=response['name'])
+			self.add_filter('with_companies', str(response['id']), 'Studios', response['name'])
 			self.mode = 'filter'
 			self.page = 1
 			self.update()
@@ -312,8 +339,25 @@ def get_tmdb_window(window_type):
 			cert = cert_list[index].split('  -  ')[0]
 			self.add_filter('certification_country', country, 'Certification country', country)
 			self.add_filter('certification', cert, 'Certification', cert)
-			self.page = 1
 			self.mode = 'filter'
+			self.page = 1
+			self.update()
+
+		@ch.click(5013)
+		def set_language_filter(self):
+			list = sorted(LANGUAGES, key=lambda k: k['name'])
+			ids = [i['id'] for i in list]
+			names = [i['name'] for i in list]
+			index = xbmcgui.Dialog().select(heading='Choose language', list=names)
+			if index == -1:
+				return None
+			id = ids[index]
+			name = names[index]
+			if 'with_original_language' in [i['type'] for i in self.filters]:
+				self.filters = []
+			self.add_filter('with_original_language', id, 'Original language', name)
+			self.mode = 'filter'
+			self.page = 1
 			self.update()
 
 		def fetch_data(self, force=False):

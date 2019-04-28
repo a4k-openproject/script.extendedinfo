@@ -28,9 +28,8 @@ class VideoPlayer(xbmc.Player):
 
 	def play(self, url, listitem, window=False):
 		super(VideoPlayer, self).play(item=url, listitem=listitem, windowed=False, startpos=-1)
-		xbmc.sleep(1000)
-		for i in range(120):
-			if self.isPlayingVideo():
+		for i in range(30):
+			if xbmc.getCondVisibility('VideoPlayer.IsFullscreen'):
 				if window and window.window_type == 'dialog':
 					wm.add_to_stack(window)
 					window.close()
@@ -44,9 +43,8 @@ class VideoPlayer(xbmc.Player):
 		else:
 			item = '{"file": "%s"}' % url
 		Utils.get_kodi_json(method='Player.Open', params='{"item": %s}' % item)
-		xbmc.sleep(1000)
-		for i in range(120):
-			if self.isPlayingVideo():
+		for i in range(90):
+			if xbmc.getCondVisibility('VideoPlayer.IsFullscreen'):
 				if window and window.window_type == 'dialog':
 					wm.add_to_stack(window)
 					window.close()
@@ -55,7 +53,7 @@ class VideoPlayer(xbmc.Player):
 			xbmc.sleep(1000)
 
 	def playtube(self, youtube_id=False, listitem=None, window=False):
-		url = 'plugin://plugin.video.youtube/play/?video_id=' + youtube_id
+		url = 'plugin://plugin.video.youtube/play/?video_id=%s' % youtube_id
 		self.play(url=url, listitem=listitem, window=window)
 
 PLAYER = VideoPlayer()
