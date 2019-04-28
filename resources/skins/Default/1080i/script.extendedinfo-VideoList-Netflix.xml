@@ -48,7 +48,7 @@
 				</control>
 			</control>
 			<control type="image">
-				<texture  diffuse="overlay/right_corner.png">$INFO[Container(500).ListItem.Property(Fanart_small)]</texture>
+				<texture  diffuse="overlay/right_corner.png">$INFO[Container(500).ListItem.Property(Fanart)]</texture>
 				<posx>600</posx>
 				<posy>-10</posy>
 				<width>1480</width>
@@ -65,7 +65,6 @@
 					<posx>0</posx>
 					<width>1018</width>
 					<control type="image" id="55444">
-						<visible>!String.IsEqual(Window.Property(Type),movies)</visible>
 						<height>265</height>
 						<width>684</width>
 						<aligny>top</aligny>
@@ -73,7 +72,6 @@
 						<texture background="true">http://localhost:52307/getpvrthumb&amp;title=$ESCINFO[Container(500).ListItem.Title]&amp;type=clearlogo&amp;mediatype=tvshow</texture>
 					</control>
 					<control type="image" id="55445">
-						<visible>String.IsEqual(Window.Property(Type),movies)</visible>
 						<height>265</height>
 						<width>684</width>
 						<aligny>top</aligny>
@@ -117,7 +115,7 @@
 					<width>52</width>
 					<height>52</height>
 					<aspectratio>keep</aspectratio>
-					<texture colordiffuse="FFFF0000">icons/genre.png</texture>
+					<texture colordiffuse="FFFF0000">netflix/genre.png</texture>
 				</control>
 
 				<control type="textbox">
@@ -566,6 +564,21 @@
 					<aligny>top</aligny>
 					<font>font13</font>
 					<textcolor>FF999999</textcolor>
+				</control>
+				<control type="button" id="5013">
+					<label>Original language</label>
+					<width>400</width>
+					<height>90</height>
+					<textoffsetx>40</textoffsetx>
+					<textoffsety>25</textoffsety>
+					<textwidth>315</textwidth>
+					<align>left</align>
+					<aligny>top</aligny>
+					<texturefocus border="40" colordiffuse="FF999999">common/roundedbutton-focus.png</texturefocus>
+					<texturenofocus border="40" colordiffuse="FF999999">common/roundedbutton-nofocus.png</texturenofocus>
+					<font>font13</font>
+					<textcolor>FF999999</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
 				</control>
 				<control type="button" id="5002">
 					<label>Genre</label>
