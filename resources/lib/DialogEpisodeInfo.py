@@ -69,13 +69,13 @@ def get_episode_window(window_type):
 
 		@ch.click(8)
 		def play_episode(self):
-			if self.dbid:
+			if self.dbid and int(self.dbid) > 0:
 				dbid = self.dbid
 				url = ''
+				PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
 			else:
-				dbid = 0
 				url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/%s' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
-			PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
+				xbmc.executebuiltin('RunPlugin(%s)' % url)
 
 		@ch.click(445)
 		def show_manage_dialog(self):
