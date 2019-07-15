@@ -162,7 +162,7 @@ def get_movie_window(window_type):
 
 		@ch.click(8)
 		def play_movie(self):
-			if self.dbid and self.dbid != "-1":
+			if self.dbid and int(self.dbid) > 0:
 				dbid = self.dbid
 				url = ''
 				PLAYER.play_from_button(url, listitem=None, window=self, type='movieid', dbid=dbid)

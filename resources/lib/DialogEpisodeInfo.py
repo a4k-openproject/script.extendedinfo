@@ -69,7 +69,7 @@ def get_episode_window(window_type):
 
 		@ch.click(8)
 		def play_episode(self):
-			if self.dbid:
+			if self.dbid and int(self.dbid) > 0:
 				dbid = self.dbid
 				url = ''
 				PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
