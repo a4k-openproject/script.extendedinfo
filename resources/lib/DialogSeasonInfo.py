@@ -59,6 +59,10 @@ def get_season_window(window_type):
 			super(DialogSeasonInfo, self).onClick(control_id)
 			ch.serve(control_id, self)
 
+		def onAction(self, action):
+			super(DialogSeasonInfo, self).onAction(action)
+			ch.serve_action(action, self.getFocusId(), self)
+
 		@ch.click(120)
 		def browse_season(self):
 			url = 'plugin://plugin.video.openmeta/tv/tvdb/%s/%s/' % (self.info['tvdb_id'], self.info['season'])
@@ -77,7 +81,12 @@ def get_season_window(window_type):
 		@ch.click(10)
 		def play_season(self):
 			url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/1' % (self.info['tvdb_id'], self.info['season'])
-			PLAYER.play_from_button(url, listitem=None, window=self, dbid=0)
+			xbmc.executebuiltin('RunPlugin(%s)' % url)
+
+		@ch.action('contextmenu', 10)
+		def play_season_choose_player(self):
+			url = 'plugin://plugin.video.openmeta/tv/play_choose_player/%s/%s/1/False' % (self.info['tvdb_id'], self.info['season'])
+			xbmc.executebuiltin('RunPlugin(%s)' % url)
 
 		@ch.click(445)
 		def show_manage_dialog(self):

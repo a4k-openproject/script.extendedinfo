@@ -53,6 +53,10 @@ def get_episode_window(window_type):
 			super(DialogEpisodeInfo, self).onClick(control_id)
 			ch.serve(control_id, self)
 
+		def onAction(self, action):
+			super(DialogEpisodeInfo, self).onAction(action)
+			ch.serve_action(action, self.getFocusId(), self)
+
 		@ch.click(750)
 		@ch.click(1000)
 		def open_actor_info(self):
@@ -75,6 +79,16 @@ def get_episode_window(window_type):
 				PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
 			else:
 				url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/%s' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
+				xbmc.executebuiltin('RunPlugin(%s)' % url)
+
+		@ch.action('contextmenu', 8)
+		def play_episode_choose_player(self):
+			if self.dbid and int(self.dbid) > 0:
+				dbid = self.dbid
+				url = ''
+				PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
+			else:
+				url = 'plugin://plugin.video.openmeta/tv/play_choose_player/%s/%s/%s/False' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
 				xbmc.executebuiltin('RunPlugin(%s)' % url)
 
 		@ch.click(445)
