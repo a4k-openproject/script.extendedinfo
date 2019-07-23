@@ -170,6 +170,16 @@ def get_movie_window(window_type):
 				url = 'plugin://plugin.video.openmeta/movies/play/tmdb/%s' % self.info.get('id', '')
 				xbmc.executebuiltin('RunPlugin(%s)' % url)
 
+		@ch.action('contextmenu', 8)
+		def play_movie_choose_player(self):
+			if self.dbid and int(self.dbid) > 0:
+				dbid = self.dbid
+				url = ''
+				PLAYER.play_from_button(url, listitem=None, window=self, type='movieid', dbid=dbid)
+			else:
+				url = 'plugin://plugin.video.openmeta/movies/play_choose_player/tmdb/%s/False' % self.info.get('id', '')
+				xbmc.executebuiltin('RunPlugin(%s)' % url)
+
 		@ch.click(445)
 		def show_manage_dialog(self):
 			manage_list = []

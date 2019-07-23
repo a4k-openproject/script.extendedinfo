@@ -69,6 +69,10 @@ def get_tvshow_window(window_type):
 			super(DialogTVShowInfo, self).onClick(control_id)
 			ch.serve(control_id, self)
 
+		def onAction(self, action):
+			super(DialogTVShowInfo, self).onAction(action)
+			ch.serve_action(action, self.getFocusId(), self)
+
 		@ch.click(120)
 		def browse_tvshow(self):
 			url = 'plugin://plugin.video.openmeta/tv/tvdb/%s/' % self.info['tvdb_id']
@@ -157,7 +161,12 @@ def get_tvshow_window(window_type):
 		@ch.click(9)
 		def play_tvshow(self):
 			url = 'plugin://plugin.video.openmeta/tv/play/%s/1/1' % self.info['tvdb_id']
-			PLAYER.play_from_button(url, listitem=None, window=self, dbid=0)
+			xbmc.executebuiltin('RunPlugin(%s)' % url)
+
+		@ch.action('contextmenu', 9)
+		def play_tvshow_choose_player(self):
+			url = 'plugin://plugin.video.openmeta/tv/play_choose_player/%s/1/1/False' % self.info['tvdb_id']
+			xbmc.executebuiltin('RunPlugin(%s)' % url)
 
 		@ch.click(20)
 		def add_tvshow_to_library(self):
