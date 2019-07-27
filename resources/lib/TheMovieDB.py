@@ -463,6 +463,8 @@ def extended_movie_info(movie_id=None, dbid=None, cache_time=14):
 		set_id = Utils.fetch(movie_set, 'id')
 	artwork = get_image_urls(poster=response.get('poster_path'), fanart=response.get('backdrop_path'))
 	movie = {
+		'media_type': 'movie',
+		'mediatype': 'movie',
 		'title': Utils.fetch(response, 'title'),
 		'Label': Utils.fetch(response, 'title'),
 		'Tagline': Utils.fetch(response, 'tagline'),

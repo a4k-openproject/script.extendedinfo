@@ -181,7 +181,7 @@ def start_info_actions(infos, params):
 		elif info == 'extendedepisodeinfo':
 			resolve_url(params.get('handle'))
 			xbmcgui.Window(10000).setProperty('infodialogs.active', 'true')
-			wm.open_episode_info(tvshow=params.get('tvshow'), tvshow_id=params.get('tvshow_id'), dbid=params.get('dbid'), season=params.get('season'), episode=params.get('episode'))
+			wm.open_episode_info(tvshow=params.get('tvshow'), tvshow_id=params.get('tvshow_id'), tvdb_id=params.get('tvdb_id'), dbid=params.get('dbid'), season=params.get('season'), episode=params.get('episode'))
 			xbmcgui.Window(10000).clearProperty('infodialogs.active')
 
 		elif info == 'albuminfo':
