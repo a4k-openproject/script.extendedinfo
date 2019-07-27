@@ -398,7 +398,7 @@ def set_window_props(name, data, prefix='', debug=False):
 def create_listitems(data=None, preload_images=0):
 	INT_INFOLABELS = ['year', 'episode', 'season', 'tracknumber', 'playcount', 'overlay']
 	FLOAT_INFOLABELS = ['rating']
-	STRING_INFOLABELS = ['genre', 'director', 'mpaa', 'plot', 'plotoutline', 'title', 'originaltitle', 'sorttitle', 'duration', 'studio', 'tagline', 'writer', 'tvshowtitle', 'premiered', 'status', 'code', 'aired', 'credits', 'lastplayed', 'album', 'votes', 'trailer', 'dateadded']
+	STRING_INFOLABELS = ['mediatype', 'genre', 'director', 'mpaa', 'plot', 'plotoutline', 'title', 'originaltitle', 'sorttitle', 'duration', 'studio', 'tagline', 'writer', 'tvshowtitle', 'premiered', 'status', 'code', 'aired', 'credits', 'lastplayed', 'album', 'votes', 'trailer', 'dateadded']
 	if not data:
 		return []
 	itemlist = []
