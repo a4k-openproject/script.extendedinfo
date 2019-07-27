@@ -62,6 +62,7 @@ def handle_tmdb_movies(results=[], local_first=True, sortkey='year'):
 			'id': tmdb_id,
 			'path': path,
 			'media_type': 'movie',
+			'mediatype': 'movie',
 			'country': Utils.fetch(movie, 'original_language'),
 			'plot': Utils.fetch(movie, 'overview'),
 			'Trailer': trailer,
@@ -116,6 +117,7 @@ def handle_tmdb_tvshows(results, local_first=True, sortkey='year'):
 			'Trailer': 'plugin://script.extendedinfo?info=tvtrailer&&id=%s' % tmdb_id,
 			'year': Utils.get_year(Utils.fetch(tv, 'first_air_date')),
 			'media_type': 'tv',
+			'mediatype': 'tvshow',
 			'character': Utils.fetch(tv, 'character'),
 			'path': 'plugin://script.extendedinfo?info=extendedtvinfo&&id=%s' % tmdb_id,
 			'Rating': Utils.fetch(tv, 'vote_average'),
@@ -140,6 +142,7 @@ def handle_tmdb_seasons(results):
 		title = 'Specials' if season_number == '0' else u'Season %s' % season_number
 		listitem = {
 			'media_type': 'season',
+			'mediatype': 'season',
 			'title': title,
 			'season': season_number,
 			'air_date': Utils.fetch(season, 'air_date'),
@@ -162,6 +165,7 @@ def handle_tmdb_episodes(results):
 			artwork = []
 		listitem = {
 			'media_type': 'episode',
+			'mediatype': 'episode',
 			'title': title,
 			'release_date': Utils.fetch(item, 'air_date'),
 			'episode': Utils.fetch(item, 'episode_number'),
@@ -459,6 +463,8 @@ def extended_movie_info(movie_id=None, dbid=None, cache_time=14):
 		set_id = Utils.fetch(movie_set, 'id')
 	artwork = get_image_urls(poster=response.get('poster_path'), fanart=response.get('backdrop_path'))
 	movie = {
+		'media_type': 'movie',
+		'mediatype': 'movie',
 		'title': Utils.fetch(response, 'title'),
 		'Label': Utils.fetch(response, 'title'),
 		'Tagline': Utils.fetch(response, 'tagline'),
@@ -564,6 +570,7 @@ def extended_tvshow_info(tvshow_id=None, cache_time=7, dbid=None):
 		'Plot': Utils.clean_text(Utils.fetch(response, 'overview')),
 		'year': Utils.get_year(Utils.fetch(response, 'first_air_date')),
 		'media_type': 'tv',
+		'mediatype': 'tvshow',
 		'Popularity': Utils.fetch(response, 'popularity'),
 		'Rating': Utils.fetch(response, 'vote_average'),
 		'country': Utils.fetch(response, 'original_language'),

@@ -65,6 +65,7 @@
 					<posx>0</posx>
 					<width>1018</width>
 					<control type="image" id="55444">
+						<visible>!String.IsEqual(Window.Property(Type),movies)</visible>
 						<height>265</height>
 						<width>684</width>
 						<aligny>top</aligny>
@@ -72,6 +73,7 @@
 						<texture background="true">http://localhost:52307/getpvrthumb&amp;title=$ESCINFO[Container(500).ListItem.Title]&amp;type=clearlogo&amp;mediatype=tvshow</texture>
 					</control>
 					<control type="image" id="55445">
+						<visible>String.IsEqual(Window.Property(Type),movies)</visible>
 						<height>265</height>
 						<width>684</width>
 						<aligny>top</aligny>

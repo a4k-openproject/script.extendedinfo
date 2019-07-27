@@ -46,6 +46,7 @@ def handle_db_movies(movie):
 		played = '0'
 	stream_info = Utils.media_streamdetails(movie['file'].encode('utf-8').lower(), movie['streamdetails'])
 	db_movie = {
+		'mediatype': 'movie',
 		'fanart': movie['art'].get('fanart', ''),
 		'fanart_small': movie['art'].get('fanart', ''),
 		'thumb': movie['art'].get('poster', ''),
@@ -91,6 +92,7 @@ def handle_db_movies(movie):
 def handle_db_tvshows(tvshow):
 	path = 'plugin://script.extendedinfo?info=extendedtvinfo&&dbid=%s' % tvshow['tvshowid']
 	db_tvshow = {
+		'mediatype': 'tvshow',
 		'fanart': tvshow['art'].get('fanart', ''),
 		'fanart_small': tvshow['art'].get('fanart', ''),
 		'thumb': tvshow['art'].get('poster', ''),

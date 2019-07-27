@@ -106,19 +106,22 @@ class WindowManager(object):
 		Utils.hide_busy()
 		self.open_dialog(dialog, prev_window)
 
-	def open_episode_info(self, prev_window=None, tvshow_id=None, season=None, episode=None, tvshow=None, dbid=None):
+	def open_episode_info(self, prev_window=None, tvshow_id=None, tvdb_id=None, season=None, episode=None, tvshow=None, dbid=None):
 		Utils.show_busy()
-		from resources.lib.TheMovieDB import get_tmdb_data
+		from resources.lib.TheMovieDB import get_tmdb_data, get_show_tmdb_id
 		from resources.lib.DialogEpisodeInfo import get_episode_window
 		if not tvshow_id:
-			response = get_tmdb_data('search/tv?query=%s&language=%s&' % (Utils.url_quote(tvshow), xbmcaddon.Addon().getSetting('LanguageID')), 30)
-			if response['results']:
-				tvshow_id = str(response['results'][0]['id'])
+			if tvdb_id:
+				tvshow_id = get_show_tmdb_id(tvdb_id)
 			else:
-				tvshow = re.sub('\(.*?\)', '', tvshow)
 				response = get_tmdb_data('search/tv?query=%s&language=%s&' % (Utils.url_quote(tvshow), xbmcaddon.Addon().getSetting('LanguageID')), 30)
 				if response['results']:
 					tvshow_id = str(response['results'][0]['id'])
+				else:
+					tvshow = re.sub('\(.*?\)', '', tvshow)
+					response = get_tmdb_data('search/tv?query=%s&language=%s&' % (Utils.url_quote(tvshow), xbmcaddon.Addon().getSetting('LanguageID')), 30)
+					if response['results']:
+						tvshow_id = str(response['results'][0]['id'])
 		ep_class = get_episode_window(DialogXML)
 		if Utils.NETFLIX_VIEW == 'true':
 			dialog = ep_class(u'script.extendedinfo-DialogVideoInfo-Netflix.xml', Utils.ADDON_PATH, tvshow_id=tvshow_id, season=season, episode=episode, dbid=dbid)
