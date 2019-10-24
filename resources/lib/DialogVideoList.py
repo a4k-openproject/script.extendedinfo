@@ -221,10 +221,17 @@ def get_tmdb_window(window_type):
 			response = TheMovieDB.get_tmdb_data('genre/%s/list?language=%s&' % (self.type, xbmcaddon.Addon().getSetting('LanguageID')), 10)
 			id_list = [item['id'] for item in response['genres']]
 			label_list = [item['name'] for item in response['genres']]
-			index = xbmcgui.Dialog().select(heading='Choose genre', list=label_list)
+#			index = xbmcgui.Dialog().select(heading='Choose genre', list=label_list)
+			index = xbmcgui.Dialog().multiselect('Choose genre', label_list)
+
 			if index == -1:
 				return None
-			self.add_filter('with_genres', str(id_list[index]), 'Genres', label_list[index])
+                        try:
+			    self.add_filter('with_genres', str(id_list[index]), 'Genres', label_list[index])
+                        except:
+                            for x in index:
+				self.add_filter('with_genres', str(id_list[x]), 'Genres', label_list[x])
+                            pass
 			self.mode = 'filter'
 			self.page = 1
 			self.update()
