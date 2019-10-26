@@ -162,23 +162,41 @@ def get_movie_window(window_type):
 
 		@ch.click(8)
 		def play_movie(self):
+			Utils.show_busy()
+#			window_id = xbmcgui.getCurrentWindowDialogId()
+#			xbmc.log(str(window_id)+'===>OPENINFO', level=xbmc.LOGNOTICE)
+			url = 'plugin://plugin.video.openmeta/movies/play/tmdb/%s' % self.info.get('id', '')
+#			PLAYER.play_from_button(url, listitem=None, window=self, type='movieid', dbid=dbid)
+#			xbmc.executebuiltin('Dialog.Close(%s, true)' % window_id)
+#			xbmc.executebuiltin('RunPlugin(%s)' % url)
 			if self.dbid and int(self.dbid) > 0:
 				dbid = self.dbid
-				url = ''
+#				url = ''
 				PLAYER.play_from_button(url, listitem=None, window=self, type='movieid', dbid=dbid)
 			else:
-				url = 'plugin://plugin.video.openmeta/movies/play/tmdb/%s' % self.info.get('id', '')
-				xbmc.executebuiltin('RunPlugin(%s)' % url)
+				PLAYER.play_from_button(url, listitem=None, window=self, type='movieid', dbid=0)
+#				url = 'plugin://plugin.video.openmeta/movies/play/tmdb/%s' % self.info.get('id', '')
+#				xbmc.executebuiltin('RunPlugin(%s)' % url)
+#			Utils.hide_busy()
 
 		@ch.action('contextmenu', 8)
 		def play_movie_choose_player(self):
+			Utils.show_busy()
+#			window_id = xbmcgui.getCurrentWindowDialogId()
+#			xbmc.log(str(window_id)+'===>OPENINFO', level=xbmc.LOGNOTICE)
+			url = 'plugin://plugin.video.openmeta/movies/play_choose_player/tmdb/%s/False' % self.info.get('id', '')
+#			PLAYER.play_from_button(url, listitem=None, window=self, type='movieid', dbid=dbid)
+#			xbmc.executebuiltin('Dialog.Close(%s, true)' % window_id)
+#			xbmc.executebuiltin('RunPlugin(%s)' % url)
 			if self.dbid and int(self.dbid) > 0:
 				dbid = self.dbid
-				url = ''
+#				url = ''
 				PLAYER.play_from_button(url, listitem=None, window=self, type='movieid', dbid=dbid)
 			else:
-				url = 'plugin://plugin.video.openmeta/movies/play_choose_player/tmdb/%s/False' % self.info.get('id', '')
-				xbmc.executebuiltin('RunPlugin(%s)' % url)
+				PLAYER.play_from_button(url, listitem=None, window=self, type='movieid', dbid=0)
+#				url = 'plugin://plugin.video.openmeta/movies/play_choose_player/tmdb/%s/False' % self.info.get('id', '')
+#				xbmc.executebuiltin('RunPlugin(%s)' % url)
+#			Utils.hide_busy()
 
 		@ch.click(445)
 		def show_manage_dialog(self):
