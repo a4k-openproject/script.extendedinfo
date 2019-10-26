@@ -107,6 +107,7 @@ def get_tmdb_window(window_type):
 
 		@ch.action('contextmenu', 500)
 		def context_menu(self):
+			Utils.show_busy()
 			if self.listitem.getProperty('dbid') and self.listitem.getProperty('dbid') != 0:
 				dbid = self.listitem.getProperty('dbid')
 			else:
@@ -132,12 +133,17 @@ def get_tmdb_window(window_type):
 					url = 'plugin://plugin.video.openmeta/tv/play/%s/1/1' % tvdb_id
 					PLAYER.play_from_button(url, listitem=None, window=self, dbid=0)
 				else:
+#					window_id = xbmcgui.getCurrentWindowDialogId()
+#					xbmc.log(str(window_id)+'===>OPENINFO', level=xbmc.LOGNOTICE)
+					url = 'plugin://plugin.video.openmeta/movies/play/tmdb/%s' % item_id
+#					xbmc.executebuiltin('Dialog.Close(%s, true)' % window_id)
+#					xbmc.executebuiltin('RunPlugin(%s)' % url)
 					if self.listitem.getProperty('dbid'):
 						dbid = self.listitem.getProperty('dbid')
-						url = ''
+#						url = ''
 					else:
 						dbid = 0
-						url = 'plugin://plugin.video.openmeta/movies/play/tmdb/%s' % item_id
+#						url = 'plugin://plugin.video.openmeta/movies/play/tmdb/%s' % item_id
 					PLAYER.play_from_button(url, listitem=None, window=self, type='movieid', dbid=dbid)
 			if selection == 1:
 				if self.listitem.getProperty('TVShowTitle'):
@@ -179,6 +185,7 @@ def get_tmdb_window(window_type):
 				else:
 					url = 'plugin://script.extendedinfo?info=playtrailer&&id=' + item_id
 				PLAYER.play(url, listitem=None, window=self)
+#			Utils.hide_busy()
 
 		@ch.click(5001)
 		def get_sort_type(self):
@@ -221,10 +228,17 @@ def get_tmdb_window(window_type):
 			response = TheMovieDB.get_tmdb_data('genre/%s/list?language=%s&' % (self.type, xbmcaddon.Addon().getSetting('LanguageID')), 10)
 			id_list = [item['id'] for item in response['genres']]
 			label_list = [item['name'] for item in response['genres']]
-			index = xbmcgui.Dialog().select(heading='Choose genre', list=label_list)
+#			index = xbmcgui.Dialog().select(heading='Choose genre', list=label_list)
+			index = xbmcgui.Dialog().multiselect('Choose genre', label_list)
 			if index == -1:
 				return None
-			self.add_filter('with_genres', str(id_list[index]), 'Genres', label_list[index])
+                        try:
+			    self.add_filter('with_genres', str(id_list[index]), 'Genres', label_list[index])
+                        except:
+                            for x in index:
+				self.add_filter('with_genres', str(id_list[x]), 'Genres', label_list[x])
+#                                xbmc.log(str(label_list[x])+'===>OPENINFO', level=xbmc.LOGNOTICE)
+                            pass
 			self.mode = 'filter'
 			self.page = 1
 			self.update()

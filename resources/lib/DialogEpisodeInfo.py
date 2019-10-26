@@ -73,23 +73,41 @@ def get_episode_window(window_type):
 
 		@ch.click(8)
 		def play_episode(self):
+			Utils.show_busy()
+#			window_id = xbmcgui.getCurrentWindowDialogId()
+#			xbmc.log(str(window_id)+'===>OPENINFO', level=xbmc.LOGNOTICE)
+			url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/%s' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
+#			PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
+#			xbmc.executebuiltin('Dialog.Close(%s, true)' % window_id)
+#			xbmc.executebuiltin('RunPlugin(%s)' % url)
 			if self.dbid and int(self.dbid) > 0:
 				dbid = self.dbid
-				url = ''
+#				url = ''
 				PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
 			else:
-				url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/%s' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
-				xbmc.executebuiltin('RunPlugin(%s)' % url)
+#				url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/%s' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
+				PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=0)
+#				xbmc.executebuiltin('RunPlugin(%s)' % url)
+#			Utils.hide_busy()
 
 		@ch.action('contextmenu', 8)
 		def play_episode_choose_player(self):
+			Utils.show_busy()
+#			window_id = xbmcgui.getCurrentWindowDialogId()
+#			xbmc.log(str(window_id)+'===>OPENINFO', level=xbmc.LOGNOTICE)
+			url = 'plugin://plugin.video.openmeta/tv/play_choose_player/%s/%s/%s/False' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
+#			PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
+#			xbmc.executebuiltin('Dialog.Close(%s, true)' % window_id)
+#			xbmc.executebuiltin('RunPlugin(%s)' % url)
 			if self.dbid and int(self.dbid) > 0:
 				dbid = self.dbid
-				url = ''
+#				url = ''
 				PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
-			else:
-				url = 'plugin://plugin.video.openmeta/tv/play_choose_player/%s/%s/%s/False' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
-				xbmc.executebuiltin('RunPlugin(%s)' % url)
+#			else:
+#				url = 'plugin://plugin.video.openmeta/tv/play_choose_player/%s/%s/%s/False' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], self.info['episode'])
+				PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=0)
+#				xbmc.executebuiltin('RunPlugin(%s)' % url)
+#			Utils.hide_busy()
 
 		@ch.click(445)
 		def show_manage_dialog(self):

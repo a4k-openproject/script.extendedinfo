@@ -88,6 +88,30 @@ def get_season_window(window_type):
 			url = 'plugin://plugin.video.openmeta/tv/play_choose_player/%s/%s/1/False' % (self.info['tvdb_id'], self.info['season'])
 			xbmc.executebuiltin('RunPlugin(%s)' % url)
 
+		@ch.action('contextmenu', 2000)
+		def context_menu(self):
+			Utils.show_busy()
+			if self.listitem.getProperty('dbid') and self.listitem.getProperty('dbid') != 0:
+				dbid = self.listitem.getProperty('dbid')
+			else:
+				dbid = 0
+			item_id = self.listitem.getProperty('id')
+			episode_id = self.listitem.getProperty('episode')
+#			xbmc.log(str(dbid)+'===>OPENINFO', level=xbmc.LOGNOTICE)
+			imdb_id = Utils.fetch(TheMovieDB.get_tvshow_ids(item_id), 'imdb_id')
+			tvdb_id = Utils.fetch(TheMovieDB.get_tvshow_ids(item_id), 'tvdb_id')
+			listitems = ['Play']
+
+			selection = xbmcgui.Dialog().select(heading='Choose option', list=listitems)
+			if selection == 0:
+				url = 'plugin://plugin.video.openmeta/tv/play/%s/%s/%s' % (Utils.fetch(TheMovieDB.get_tvshow_ids(self.tvshow_id), 'tvdb_id'), self.info['season'], episode_id)
+				if self.listitem.getProperty('dbid'):
+					dbid = self.listitem.getProperty('dbid')
+				else:
+					dbid = 0
+				PLAYER.play_from_button(url, listitem=None, window=self, type='episodeid', dbid=dbid)
+#			Utils.hide_busy()
+
 		@ch.click(445)
 		def show_manage_dialog(self):
 			manage_list = []

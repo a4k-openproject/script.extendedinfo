@@ -1,4 +1,4 @@
-import xbmc, xbmcgui, xbmcaddon
+import xbmc, xbmcgui, xbmcaddon, urllib
 from resources.lib import Utils
 from resources.lib.WindowManager import wm
 from resources.lib.OnClickHandler import OnClickHandler
