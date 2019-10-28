@@ -113,7 +113,10 @@ class DialogBaseInfo(object):
 			youtube_list = self.getControl(350)
 		except:
 			return None
-		result = YouTube.search_youtube(search_str, limit=10)
+		try:
+			result = YouTube.search_youtube(search_str, limit=10)
+		except:
+			return None
 		if not self.yt_listitems:
 			self.yt_listitems = result.get('listitems', [])
 			if 'videos' in self.data:
